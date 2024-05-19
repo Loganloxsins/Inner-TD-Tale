@@ -8,18 +8,23 @@ CONFIG += c++17
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+# Add the include directory to the INCLUDEPATH
+INCLUDEPATH += $$PWD/include
+
+# Update the paths to reflect the new directory structure
 SOURCES += \
-    main.cpp \
-    mainwindow.cpp
+    src/main.cpp \
+    src/mainwindow.cpp
 
 HEADERS += \
-    mainwindow.h
+    include/mainwindow.h
 
 FORMS += \
-    mainwindow.ui
+    forms/mainwindow.ui
 
 TRANSLATIONS += \
-    Inner-TD-Tale_zh_CN.ts
+    translations/Inner-TD-Tale_zh_CN.ts
+
 CONFIG += lrelease
 CONFIG += embed_translations
 
