@@ -11,16 +11,20 @@ CONFIG += c++17
 # Add the include directory to the INCLUDEPATH
 INCLUDEPATH += $$PWD/include
 
-# Update the paths to reflect the new directory structure
-SOURCES += \
-    src/main.cpp \
-    src/mainwindow.cpp
+# Correctly collect all .cpp files in the 'src' directory
+file_cpp = $$files($$PWD/src/*.cpp,true)
+win32:file_cpp ~= s|\\\\|/|g
+for(file, file_cpp):SOURCES += $$file
 
-HEADERS += \
-    include/mainwindow.h
+# Collect all .h files in the 'include' directory assuming that's where they are
+file_h = $$files($$PWD/include/*.h,true)
+win32:file_h ~= s|\\\\|/|g
+for(file, file_h):HEADERS += $$file
 
-FORMS += \
-    forms/mainwindow.ui
+
+file_ui = $$files($$PWD/forms/*.ui, true)
+win32:file_ui ~= s|\\\\|/|g
+for(file, file_ui):FORMS += $$file
 
 TRANSLATIONS += \
     translations/Inner-TD-Tale_zh_CN.ts
@@ -32,3 +36,4 @@ CONFIG += embed_translations
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+

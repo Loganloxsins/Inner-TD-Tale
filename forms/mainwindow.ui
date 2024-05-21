@@ -23,7 +23,7 @@
        </font>
       </property>
       <property name="text">
-       <string>塔防游戏</string>
+       <string>塔防游戏，当前存档：xxx.json</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>

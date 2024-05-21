@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "mapchoosewindow.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -23,5 +24,6 @@ class MainWindow : public QMainWindow {
 
   private:
     Ui::MainWindow *ui;
+    MapChooseWindow *_mapChooseWindow;
 };
 #endif // MAINWINDOW_H
