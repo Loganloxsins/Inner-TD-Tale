@@ -31,6 +31,8 @@ Makefile*
 *build-*
 *.qm
 *.prl
+build/Desktop_Qt_5_15_2_MinGW_64_bit-Debug/.qtc_clangd/
+
 
 # Qt unit tests
 target_wrapper.*
