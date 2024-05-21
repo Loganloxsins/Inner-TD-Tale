@@ -9,15 +9,19 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
     Q_OBJECT
 
-public:
+  public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private:
+  public slots:
+    void onStartGameClicked();
+    void onLoadSaveClicked();
+    void onExitClicked();
+
+  private:
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H
