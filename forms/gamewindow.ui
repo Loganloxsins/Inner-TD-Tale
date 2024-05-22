@@ -6,13 +6,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1000</width>
-    <height>800</height>
+    <width>1200</width>
+    <height>1000</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
+  <widget class="QPushButton" name="pushButton_SaveandBack">
+   <property name="geometry">
+    <rect>
+     <x>1020</x>
+     <y>0</y>
+     <width>81</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>保存并返回</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

@@ -7,16 +7,19 @@ namespace Ui {
 class GameWindow;
 }
 
-class GameWindow : public QDialog
-{
+class GameWindow : public QDialog {
     Q_OBJECT
 
-public:
+  public:
     explicit GameWindow(QWidget *parent = nullptr);
     ~GameWindow();
 
-private:
+  public slots:
+    void onSaveandBackClicked();
+
+  private:
     Ui::GameWindow *ui;
+    QWidget *_parent;
 };
 
 #endif // GAMEWINDOW_H
