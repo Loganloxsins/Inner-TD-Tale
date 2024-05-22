@@ -2,6 +2,7 @@
 #define MAPCHOOSEWINDOW_H
 
 #include <QDialog>
+#include "gamewindow.h"
 
 namespace Ui {
 class MapChooseWindow;
@@ -22,6 +23,7 @@ class MapChooseWindow : public QDialog {
   private:
     Ui::MapChooseWindow *ui;
     QWidget *_parent;
+    GameWindow *_gameWindow;
 };
 
 #endif // MAPCHOOSEWINDOW_H
