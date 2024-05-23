@@ -23,6 +23,7 @@ for(file, file_h):HEADERS += $$file
 
 
 
+
 file_ui = $$files($$PWD/forms/*.ui, true)
 win32:file_ui ~= s|\\\\|/|g
 for(file, file_ui):FORMS += $$file
