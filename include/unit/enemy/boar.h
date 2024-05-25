@@ -1,7 +1,8 @@
 #ifndef BOAR_H
 #define BOAR_H
 
-#include "base_enemy.h"
+
+#include "include/all_include.h"
 class Boar : public Enemy {
   public:
     Boar(int health, int attackPower, int speed)

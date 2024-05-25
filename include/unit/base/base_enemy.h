@@ -2,8 +2,7 @@
 #define BASE_ENEMY_H
 
 
-#include "base_unit.h"
-#include "grid.h"
+
 #include <vector>
 
 class Enemy : public Unit {

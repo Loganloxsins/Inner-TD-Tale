@@ -1,8 +1,9 @@
 #ifndef PATH_H
 #define PATH_H
 
-#include "grid.h"
 #include <vector>
+
+#include "include/map/grid.h"
 
 class Path {
   private:

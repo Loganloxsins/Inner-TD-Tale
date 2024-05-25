@@ -8,7 +8,7 @@ CONFIG += c++17
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-# Add the include directory to the INCLUDEPATH
+# Add the include directory to the INCLUDEPATH，不然头文件包含都得写成#include "include/map/grid.h"
 INCLUDEPATH += $$PWD/include
 
 # Correctly collect all .cpp files in the 'src' directory
@@ -23,13 +23,13 @@ for(file, file_h):HEADERS += $$file
 
 
 
-
 file_ui = $$files($$PWD/forms/*.ui, true)
 win32:file_ui ~= s|\\\\|/|g
 for(file, file_ui):FORMS += $$file
 
 TRANSLATIONS += \
     translations/Inner-TD-Tale_zh_CN.ts
+
 
 CONFIG += lrelease
 CONFIG += embed_translations

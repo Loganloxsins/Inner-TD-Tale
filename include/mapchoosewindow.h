@@ -1,8 +1,8 @@
 #ifndef MAPCHOOSEWINDOW_H
 #define MAPCHOOSEWINDOW_H
 
-#include <QDialog>
 #include "gamewindow.h"
+#include <QDialog>
 
 namespace Ui {
 class MapChooseWindow;
@@ -19,6 +19,8 @@ class MapChooseWindow : public QDialog {
     void onMapChooseClicked();
     void onEnterClicked();
     void onBackClicked();
+    void onLevel1Clicked();
+    void onLevel2Clicked();
 
   private:
     Ui::MapChooseWindow *ui;

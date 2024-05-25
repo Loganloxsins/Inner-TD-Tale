@@ -1,19 +1,24 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include "grid.h"
 #include <string>
 #include <vector>
+
+#include "include/map/grid.h"
+
 class Map {
   private:
-    int width, height;
-    std::vector<std::vector<Grid>> grids;
+    std::vector<std::vector<Grid>> _all_grids;
+    std::vector<std::vector<int>> _gridMatrix;
+    std::vector<std::vector<std::pair<int, int>>> _monsterPaths;
 
   public:
-    Map(int width, int height);
-    void loadMap(const std::string &filePath);
-    void saveMap(const std::string &filePath);
-    Grid *getGrid(int x, int y);
+    // 构造函数
+    Map();
+
+    bool loadMap(const QString &filePath);
+
+    void drawMap(QPainter *painter);
 };
 
 #endif // MAP_H

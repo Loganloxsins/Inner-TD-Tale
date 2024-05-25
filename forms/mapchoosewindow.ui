@@ -32,14 +32,28 @@
    <item>
     <widget class="QPushButton" name="pushButton_MapChoose">
      <property name="text">
-      <string>选择地图</string>
+      <string>选择地图（暂时不用）</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pushButton_Level1">
+     <property name="text">
+      <string>关卡1</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="pushButton_Level2">
+     <property name="text">
+      <string>关卡2</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QPushButton" name="pushButton_Enter">
      <property name="text">
-      <string>进入地图</string>
+      <string>进入关卡</string>
      </property>
     </widget>
    </item>

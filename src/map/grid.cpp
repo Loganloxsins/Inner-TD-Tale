@@ -1,50 +1,52 @@
 
 #include "include/map/grid.h"
 
-Grid::Grid()
-    : x(0), y(0), state(0), next_move(0), looks(nullptr), planted(0) {
-    ;
+Grid::Grid() {
+    x = 0;
+    y = 0;
+    type = GridType::WALL;
+    isplanted = false;
+    looks = new QPixmap("../../assets/wall.png");
 }
 
-Grid::Grid(const Grid &c)
-    : row(c.row), col(c.col), state(c.state), next_move(c.next_move),
-      looks(c.looks), planted(c.planted) {
-    ;
+Grid::Grid(const Grid &c) {
+    x = c.x;
+    y = c.y;
+    type = c.type;
+    isplanted = c.isplanted;
+    looks = c.looks;
+    movie = c.movie;
 }
 
-Grid::Grid(int x, int y, int s, int d)
-    : row(x), col(y), state(s), next_move(d), planted(0) {
-    // 根据状态 设置单元格的图片
-    switch (state) {
-    case WALL: // 0墙
-        looks = new QPixmap("../source/empty.png");
+Grid::Grid(int x, int y, GridType type, bool isplanted)
+    : x(x), y(y), type(type), isplanted(isplanted) {
+    switch (type) {
+    case GridType::WALL:
+        looks = new QPixmap("../../assets/wall.png");
         break;
-    case PATH: // 1敌人路径
-        looks = new QPixmap("../source/treez.png");
+    case GridType::PATH:
+        looks = new QPixmap("../../assets/path.png");
         break;
-    case BEGIN: // 2起点
-        looks = new QPixmap("../source/monster-door.png");
+    case GridType::SPAWN:
+        looks = new QPixmap("../../assets/spawn.png");
         break;
-    case END: // 3终点
-        looks = new QPixmap("../source/tower.png");
+    case GridType::DEST:
+        looks = new QPixmap("../../assets/dest.png");
         break;
-    case REMOTE: // 4我方远程
-        looks = new QPixmap("../source/remote_path.png");
-        break;
-    case FLY_PATH: // 5飞行路径
-        looks = new QPixmap("../source/fly-path.png");
+    case GridType::REMOTE:
+        looks = new QPixmap("../../assets/remote.png");
         break;
     }
 }
 
-void Grid::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
-
+// 实现QGraphicsItem的纯虚函数
+QRectF Grid::boundingRect() const{
+    // 返回Grid占据的矩形区域，GRID_SIZE应该是您定义的网格尺寸
+    return QRectF(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
 }
 
-void Grid::setMovie(QString path) {
-
-}
-
-QRectF Grid::boundingRect() const {
-    return nullptr;
+void Grid::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+                 QWidget *widget) {
+    // 使用您的paint方法绘制网格
+    painter->drawPixmap(x * GRID_SIZE, y * GRID_SIZE, *looks);
 }

@@ -1,8 +1,8 @@
 #ifndef REMOTE_TOWER_H
 #define REMOTE_TOWER_H
 
-#include "base_tower.h"
-#include "map.h"
+
+#include "include/all_include.h"
 
 class RangedTower : public Tower {
   public:

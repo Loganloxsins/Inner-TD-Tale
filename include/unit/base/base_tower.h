@@ -1,8 +1,7 @@
 #ifndef BASE_TOWER_H
 #define BASE_TOWER_H
 
-#include "base_unit.h"
-#include "grid.h"
+#include "include/all_include.h"
 #include <vector>
 
 class Tower : public Unit {
