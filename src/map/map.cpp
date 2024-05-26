@@ -75,12 +75,11 @@ bool Map::loadMap(const QString &filePath) {
 }
 
 void Map::drawMap(QPainter *painter) {
-    // 绘制地图
+    // 绘制地图 i行j列 iy jx
     for (int i = 0; i < _gridMatrix.size(); ++i) {
         for (int j = 0; j < _gridMatrix[i].size(); ++j) {
-            int gridType = _gridMatrix[i][j];
-            GridType type = static_cast<GridType>(gridType);
-            Grid* grid = new Grid(i, j, type, false);
+            GridType type = static_cast<GridType>(_gridMatrix[i][j]);
+            Grid* grid = new Grid(j, i, type, false);
             grid->paint(painter,nullptr,nullptr);
         }
     }

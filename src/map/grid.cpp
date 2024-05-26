@@ -47,6 +47,5 @@ QRectF Grid::boundingRect() const{
 
 void Grid::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                  QWidget *widget) {
-    // 使用您的paint方法绘制网格
     painter->drawPixmap(x * GRID_SIZE, y * GRID_SIZE, *looks);
 }
