@@ -24,23 +24,33 @@ const int GRID_SIZE = 100;
 
 class Grid : public QGraphicsItem {
   public:
-    int x, y;       // 横 纵
-    GridType type;  // 格子类型
-    bool isplanted; // 是否种植塔 只有PATH和REMOTE才有意义
-
+    // 绘制相关
+    int x, y; // 横 纵
+    bool isHighlighted = false;
     QPixmap *looks; // 格子的图片
     QMovie *movie = nullptr;
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
+               QWidget *widget) override;
+
+    QRectF boundingRect() const override;
+
+    bool contains(const QPoint &point) {
+        QRect rect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+        return rect.contains(point);
+    };
+
+    void highlight() { isHighlighted = !isHighlighted; };
+
+    // 逻辑相关
+    GridType type;  // 格子类型
+    bool isplanted; // 是否种植塔 只有PATH和REMOTE才有意义
 
     Grid();
 
     Grid(const Grid &c);
 
     Grid(int x, int y, GridType type, bool isplanted);
-
-    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
-               QWidget *widget) override;
-
-    QRectF boundingRect() const override;
 };
 
 #endif // GRID_H

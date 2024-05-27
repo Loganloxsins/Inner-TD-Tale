@@ -1,9 +1,10 @@
 #ifndef GAMEWINDOW_H
 #define GAMEWINDOW_H
 
+#include "map/grid.h"
 #include "map/map.h"
-#include "unit/base/base_enemy.h"
-#include "unit/base/base_tower.h"
+#include "unit/base_enemy.h"
+#include "unit/base_tower.h"
 #include <QDialog>
 #include <QMouseEvent>
 
@@ -33,9 +34,13 @@ class GameWindow : public QDialog {
     int _spawnTimerID;
     bool _isPaused; // 游戏是否暂停
 
+    Grid *_selectedGrid; // 当前选中的格子
+
   public slots:
     void onSaveandBackClicked();
     void onPauseClicked();
+    // void onPlantMeleeTower();  // 种植近战塔按钮点击事件
+    // void onPlantRemoteTower(); // 种植远程塔按钮点击事件
 
   private:
     Ui::GameWindow *ui;

@@ -1,12 +1,13 @@
 #include "gamewindow.h"
 #include "map/map.h"
 #include "ui_gamewindow.h"
-#include "unit/enemy/boar.h"
+#include "unit/boar.h"
 #include <QDebug>
 #include <QDir>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPixmap>
+#include <QRandomGenerator> // 添加头文件以使用随机数生成
 
 GameWindow::GameWindow(QWidget *parent)
     : QDialog(parent), ui(new Ui::GameWindow), _parent(parent),
@@ -63,10 +64,12 @@ void GameWindow::onPauseClicked() {
         }
     } else {
         _gameTimerID = startTimer(1000);
-        _spawnTimerID = startTimer(3000);
+        // 随机生成1到5秒（1000到5000毫秒）的间隔
+        int randomSpawnInterval =
+            QRandomGenerator::global()->bounded(4000) + 1000;
+        _spawnTimerID = startTimer(randomSpawnInterval);
     }
 }
-
 void GameWindow::showEvent(QShowEvent *event) {
     QDialog::showEvent(event);
     _gameTimerID = startTimer(1000);
@@ -99,13 +102,14 @@ void GameWindow::timerEvent(QTimerEvent *event) {
     if (event->timerId() == _gameTimerID) {
         for (auto enemy : _enemies) {
             enemy->move();
-            if (enemy->_state == EnemyState::ARRIVED && !enemy->_isArrivedCounted) {
+            if (enemy->_state == EnemyState::ARRIVED &&
+                !enemy->_isArrivedCounted) {
                 _arrivedEnemies++;
-                enemy->_isArrivedCounted=true;
+                enemy->_isArrivedCounted = true;
                 if (_arrivedEnemies >= 10) {
                     // 游戏失败
                     qDebug() << "Game Over: You have lost!";
-                 //   resetGame();
+                    //   resetGame();
                     this->hide();
                     _parent->show();
                     return;
@@ -120,6 +124,10 @@ void GameWindow::timerEvent(QTimerEvent *event) {
             Enemy *enemy = new Boar(100, 1, path);
             this->_enemies.push_back(enemy);
             _spawnedEnemies++;
+            // 重新随机生成下次生成敌人的间隔
+            int randomSpawnInterval =
+                QRandomGenerator::global()->bounded(4000) + 1000;
+            _spawnTimerID = startTimer(randomSpawnInterval);
         } else {
             killTimer(_spawnTimerID);
         }
@@ -129,11 +137,33 @@ void GameWindow::timerEvent(QTimerEvent *event) {
 void GameWindow::mousePressEvent(QMouseEvent *event) {
     if (_isPaused) {
         QPoint clickPos = event->pos();
-        for (auto enemy : _enemies) {
-            if (enemy->contains(clickPos)) {
-                enemy->highlight();
-                update();
-                break;
+        bool enemySelected = false; // 标志变量，表示是否选中了怪物
+
+        // 检查 _enemies 是否为空
+        if (!_enemies.empty()) {
+            for (auto enemy : _enemies) {
+                // 检查 enemy 是否为 nullptr
+                if (enemy && enemy->contains(clickPos)) {
+                    enemy->highlight();
+                    update();
+                    enemySelected = true; // 设置标志变量
+                    break;
+                }
+            }
+        }
+
+        // 如果没有选中怪物，则检查格子
+        if (!enemySelected && map && !map->_all_grids.empty()) {
+            for (auto row : map->_all_grids) {
+                for (auto grid : row) {
+                    // 检查 grid 是否为 nullptr
+                    if (grid && grid->contains(clickPos)) {
+                        // qDebug() << "click grid: " << grid->x << " " << grid->y;
+                        grid->highlight();
+                        update();
+                        break;
+                    }
+                }
             }
         }
     }

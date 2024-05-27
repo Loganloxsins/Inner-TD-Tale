@@ -1,14 +1,13 @@
 
 #include "include/map/map.h"
-#include "utils/grid_type.h"
 #include "map/grid.h"
+#include "utils/grid_type.h"
 
 #include <QDebug>
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
-
 
 Map::Map() {
     _all_grids.clear();
@@ -51,6 +50,17 @@ bool Map::loadMap(const QString &filePath) {
         }
     }
 
+    // 将grid存入 std::vector<std::vector<Grid *>> _all_grids;
+    for (int i = 0; i < _gridMatrix.size(); ++i) {
+        std::vector<Grid *> row;
+        for (int j = 0; j < _gridMatrix[i].size(); ++j) {
+            GridType type = static_cast<GridType>(_gridMatrix[i][j]);
+            Grid *grid = new Grid(j, i, type, false);
+            row.push_back(grid);
+        }
+        _all_grids.push_back(row);
+    }
+
     // 解析怪物路径
     if (jsonObj.contains("monsterPaths") && jsonObj["monsterPaths"].isArray()) {
         QJsonArray pathsArray = jsonObj["monsterPaths"].toArray();
@@ -76,11 +86,12 @@ bool Map::loadMap(const QString &filePath) {
 
 void Map::drawMap(QPainter *painter) {
     // 绘制地图 i行j列 iy jx
-    for (int i = 0; i < _gridMatrix.size(); ++i) {
-        for (int j = 0; j < _gridMatrix[i].size(); ++j) {
-            GridType type = static_cast<GridType>(_gridMatrix[i][j]);
-            Grid* grid = new Grid(j, i, type, false);
-            grid->paint(painter,nullptr,nullptr);
+    for (int i = 0; i < _all_grids.size(); ++i) {
+        for (int j = 0; j < _all_grids[i].size(); ++j) {
+            Grid *grid = _all_grids[i][j];
+            if (grid) {
+                grid->paint(painter, nullptr, nullptr);
+            }
         }
     }
 }

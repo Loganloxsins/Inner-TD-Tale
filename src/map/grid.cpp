@@ -1,6 +1,6 @@
 
 #include "include/map/grid.h"
-
+#include <QMouseEvent>
 Grid::Grid() {
     x = 0;
     y = 0;
@@ -40,7 +40,7 @@ Grid::Grid(int x, int y, GridType type, bool isplanted)
 }
 
 // 实现QGraphicsItem的纯虚函数
-QRectF Grid::boundingRect() const{
+QRectF Grid::boundingRect() const {
     // 返回Grid占据的矩形区域，GRID_SIZE应该是您定义的网格尺寸
     return QRectF(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
 }
@@ -48,4 +48,8 @@ QRectF Grid::boundingRect() const{
 void Grid::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                  QWidget *widget) {
     painter->drawPixmap(x * GRID_SIZE, y * GRID_SIZE, *looks);
+    if (isHighlighted) {
+        painter->setPen(QPen(Qt::red, 3));
+        painter->drawRect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
+    }
 }

@@ -39,6 +39,32 @@
     <string>暂停</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_PlantMeele">
+   <property name="geometry">
+    <rect>
+     <x>840</x>
+     <y>0</y>
+     <width>81</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>放置远程塔</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_PlantRemote">
+   <property name="geometry">
+    <rect>
+     <x>740</x>
+     <y>0</y>
+     <width>81</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>放置近战塔</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
