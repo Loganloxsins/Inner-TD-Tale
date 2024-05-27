@@ -26,6 +26,19 @@
     <string>保存并返回</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_Pause">
+   <property name="geometry">
+    <rect>
+     <x>930</x>
+     <y>0</y>
+     <width>81</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>暂停</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

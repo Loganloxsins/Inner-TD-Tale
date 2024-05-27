@@ -33,5 +33,11 @@ void Boar::move() {
 
 void Boar::draw(QPainter *painter) {
     QPixmap pixmap(_pic_path);
+    if (_isHighlighted) {
+        QPen pen(Qt::yellow);
+        pen.setWidth(3);
+        painter->setPen(pen);
+        painter->drawRect(_x * GRID_SIZE, _y * GRID_SIZE, 60, 60);
+    }
     painter->drawPixmap(_x * GRID_SIZE, _y * GRID_SIZE, 60, 60, pixmap);
 }

@@ -15,7 +15,8 @@ class Enemy : public Unit {
     std::vector<std::pair<int, int>> _path;
     int _path_index;
     EnemyState _state;
-
+    bool _isHighlighted = false;
+    bool _isArrivedCounted = false;
 
     // 移动函数接口
     virtual void move() = 0;
@@ -29,6 +30,12 @@ class Enemy : public Unit {
             _state = EnemyState::ARRIVED;
         }
     }
+
+    bool contains(const QPoint &point) {
+        QRect enemyRect(_x * GRID_SIZE, _y * GRID_SIZE, 60, 60);
+        return enemyRect.contains(point);
+    };
+    void highlight() { _isHighlighted = !_isHighlighted; };
 
     // 攻击函数
 };
