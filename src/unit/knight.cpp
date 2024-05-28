@@ -1,17 +1,16 @@
 #include "unit/knight.h"
 #include "unit/base_tower.h"
 
-Knight::Knight(int hp, int attackPower, int range) {
+Knight::Knight(int x, int y, int hp, int attackPower, int range) {
     _hp_full = hp;
     _hp_cur = hp;
-    _attackRange=range;
+    _attackRange = range;
     _gridType = GridType::PATH;
+    _x = x;
+    _y = y;
 
     _pic_path =
-        R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\assets\monster1.png)";
-
-    _x = -1;
-    _y = -1;
+        R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\assets\TorchWood.png)";
 }
 
 void Knight::draw(QPainter *painter) {
