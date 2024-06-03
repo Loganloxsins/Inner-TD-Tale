@@ -49,7 +49,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>放置远程塔</string>
+    <string>放置近战塔</string>
    </property>
   </widget>
   <widget class="QPushButton" name="pushButton_PlantRemote">
@@ -62,7 +62,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>放置近战塔</string>
+    <string>放置远程塔</string>
    </property>
   </widget>
  </widget>

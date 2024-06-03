@@ -8,7 +8,7 @@
 #include <vector>
 class Boar : public Enemy {
   public:
-    Boar(int hp, int speed, std::vector<std::pair<int, int>> path);
+    Boar(int hp, int speed, std::vector<std::pair<int, int>> path,Map *map);
 
     void move() override;
     void draw(QPainter *painter) override;

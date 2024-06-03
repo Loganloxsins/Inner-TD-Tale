@@ -3,7 +3,7 @@
 
 class Knight : public Tower {
   public:
-    Knight(int hp, int attackPower, int range);
+    Knight(int x,int y,int hp, int attackPower, int range);
     void draw(QPainter *painter) override;
     
 };

@@ -25,14 +25,14 @@ class Unit {
     int _hp_full, _hp_cur;
     int _attackRange;
     int _damage;
-
+    Map *_map;
 
     virtual bool isAlive() const { return _hp_cur > 0; }
     virtual void receiveDamage(int damage) {
         if (_hp_cur > damage)
             _hp_cur -= damage;
         else
-            _hp_cur=0;
+            _hp_cur = 0;
     }
     // 判断是否在攻击范围内
     virtual bool isInRange(Unit *target) {
