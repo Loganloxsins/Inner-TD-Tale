@@ -1,9 +1,12 @@
+#include "unit/base_enemy.h"
 #include "unit/base_tower.h"
 #include "unit/base_unit.h"
-
 class Knight : public Tower {
   public:
-    Knight(int x,int y,int hp, int attackPower, int range);
+    vector<Enemy *> &_enemies; // 场景中所有敌人
+    Enemy *_target_enemy; // 要攻击的目标敌人 可以有不同的选择策略
+    Knight(int x, int y, vector<Enemy *> &enemies);
     void draw(QPainter *painter) override;
-    
+    void idle() override;
+    void attack() override;
 };

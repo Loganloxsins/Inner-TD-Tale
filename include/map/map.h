@@ -6,6 +6,7 @@
 
 #include "include/map/grid.h"
 
+// 注意：所有地图数据都是以 row col 的形式存储的
 class Map {
 
   public:
@@ -22,5 +23,3 @@ class Map {
 };
 
 #endif // MAP_H
-
-

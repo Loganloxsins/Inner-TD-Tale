@@ -50,12 +50,20 @@ bool Map::loadMap(const QString &filePath) {
         }
     }
 
+    // // 将——gridMatrix中的数字按照矩阵的形式输出
+    // for (const auto &row : _gridMatrix) {
+    //     for (const auto &elem : row) {
+    //         std::cout << elem << " ";
+    //     }
+    //     std::cout << std::endl;
+    // }
+
     // 将grid存入 std::vector<std::vector<Grid *>> _all_grids;
-    for (int i = 0; i < _gridMatrix.size(); ++i) {
+    for (int row_index = 0; row_index < _gridMatrix.size(); ++row_index) {
         std::vector<Grid *> row;
-        for (int j = 0; j < _gridMatrix[i].size(); ++j) {
-            GridType type = static_cast<GridType>(_gridMatrix[i][j]);
-            Grid *grid = new Grid(j, i, type, false);
+        for (int col_index = 0; col_index < _gridMatrix[row_index].size(); ++col_index) {
+            GridType type = static_cast<GridType>(_gridMatrix[row_index][col_index]);
+            Grid *grid = new Grid(col_index, row_index, type, false);
             row.push_back(grid);
         }
         _all_grids.push_back(row);
@@ -86,9 +94,9 @@ bool Map::loadMap(const QString &filePath) {
 
 void Map::drawMap(QPainter *painter) {
     // 绘制地图 i行j列 iy jx
-    for (int i = 0; i < _all_grids.size(); ++i) {
-        for (int j = 0; j < _all_grids[i].size(); ++j) {
-            Grid *grid = _all_grids[i][j];
+    for (int row_index = 0; row_index < _all_grids.size(); ++row_index) {
+        for (int col_index = 0; col_index < _all_grids[row_index].size(); ++col_index) {
+            Grid *grid = _all_grids[row_index][col_index];
             if (grid) {
                 grid->paint(painter, nullptr, nullptr);
             }

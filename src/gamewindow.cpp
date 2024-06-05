@@ -3,6 +3,7 @@
 #include "ui_gamewindow.h"
 #include "unit/boar.h"
 #include "unit/knight.h"
+#include "unit/shooter.h"
 #include <QDebug>
 #include <QDir>
 #include <QMouseEvent>
@@ -33,14 +34,6 @@ GameWindow::GameWindow(QWidget *parent)
     } else {
         qDebug() << "load map failed";
     }
-
-    _gameTimerID = new QTimer(this);
-    _spawnTimerID =new QTimer(this);
-    _gameTimerID->start(1000);
-    _spawnTimerID->start(2000);
-
-
-    
 }
 
 GameWindow::~GameWindow() {
@@ -99,7 +92,15 @@ void GameWindow::onPlantMeleeTower() {
                 qDebug() << "Plant melee tower here!";
                 // 种植近战塔
                 Tower *tower =
-                    new Knight(_selectedGrid->x, _selectedGrid->y, 100, 10, 1);
+                    new Knight(_selectedGrid->x, _selectedGrid->y, _enemies);
+                // 将该格子的tower指针指向新建的塔
+                _selectedGrid->_tower = tower;
+
+                // 检测all_grids是否正确加入该格子的该塔
+                // qDebug() << "Tower
+                // on:"<<_map->_all_grids[_selectedGrid->y][_selectedGrid->x]->_tower->_x<<"
+                // "<<_map->_all_grids[_selectedGrid->y][_selectedGrid->x]->_tower->_y;
+
                 _towers.push_back(tower);
                 _selectedGrid->isHighlighted = false;
                 _selectedGrid->isplanted = true;
@@ -113,20 +114,57 @@ void GameWindow::onPlantMeleeTower() {
     }
 }
 
-void GameWindow::onPlantRemoteTower() {}
+void GameWindow::onPlantRemoteTower() {
+    if (_isPaused) {
+        // 输出选中格子的坐标
+        if (_selectedGrid) {
+            qDebug() << "selected grid: " << _selectedGrid->x << " "
+                     << _selectedGrid->y;
+        }
+        // 如果被选中的格子高亮，则检查格子类型，种植远程塔
+        if (_selectedGrid && _selectedGrid->isHighlighted) {
+            if (_selectedGrid->type == GridType::REMOTE &&
+                !_selectedGrid->isplanted) {
+                qDebug() << "Plant remote tower here!";
+                // 种植远程塔
+                Tower *tower =
+                    new Shooter(_selectedGrid->x, _selectedGrid->y, _enemies);
+                // 将该格子的tower指针指向新建的塔
+                _selectedGrid->_tower = tower;
 
+                // 检测all_grids是否正确加入该格子的该塔
+                // qDebug() << "Tower
+                // on:"<<_map->_all_grids[_selectedGrid->y][_selectedGrid->x]->_tower->_x<<"
+                // "<<_map->_all_grids[_selectedGrid->y][_selectedGrid->x]->_tower->_y;
 
+                _towers.push_back(tower);
+                _selectedGrid->isHighlighted = false;
+                _selectedGrid->isplanted = true;
+                // 清除selectedGrid
+                _selectedGrid = nullptr;
+                update();
+            } else {
+                qDebug() << "Can't plant remote tower here!";
+            }
+        }
+    }
+}
 
 // 绘图事件 绘制画面上的所有内容
+void GameWindow::showEvent(QShowEvent *event) {
+    QDialog::showEvent(event);
+    _gameTimerID = startTimer(1000);
+    _spawnTimerID = startTimer(3000); // 每隔3秒生成一个新怪物
+}
 void GameWindow::paintEvent(QPaintEvent *) {
 
     QPainter painter(this);
-    QString path =
-        R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\assets\BG-hd.png)";
     // QString path =
-    //     R"(:\assets\BG-hd.png)";不行
-    QPixmap pixmap(path);
-    painter.drawPixmap(0, 0, this->width(), this->height(), pixmap);
+    //     R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\assets\BG-hd.png)";
+    // // QString path =
+    // //     R"(:\assets\BG-hd.png)";不行
+    // QPixmap pixmap(path);
+    // painter.drawPixmap(0, 0, this->width(), this->height(), pixmap);
 
     _map->drawMap(&painter); // 绘制地图
 
@@ -144,34 +182,81 @@ void GameWindow::timerEvent(QTimerEvent *event) {
     if (_isPaused)
         return;
 
-    // 打印敌人编号和位置信息
-    for (int i = 0; i < _enemies.size(); i++) {
-        qDebug() << "enemy" << i << " position: " << _enemies[i]->_x << " " << _enemies[i]->_y;
-    }
-
     if (event->timerId() == _gameTimerID) {
-        for (auto enemy : _enemies) {
-            enemy->move();
-            if (enemy->_state == EnemyState::ARRIVED && !enemy->_isArrivedCounted) {
-                _arrivedEnemies++;
-                enemy->_isArrivedCounted = true;
+        // 使用迭代器遍历所有敌人，以便在遍历过程中安全地删除敌人
+        for (auto it = _enemies.begin(); it != _enemies.end();) {
+            Enemy *enemy = *it;
+            // 检查血量
+            if (enemy->_hp_cur <= 0) {
+                enemy->_state = EnemyState::DEAD;
+            }
+
+            // 根据敌人的状态执行不同的操作
+            if (enemy->_state == EnemyState::MOVING) {
+                enemy->move(); // 如果敌人正在移动，调用移动函数
+                ++it;          // 移动到下一个敌人
+            } else if (enemy->_state == EnemyState::ATTACKING) {
+                enemy->attack(); // 如果敌人正在攻击，调用攻击函数
+                ++it;            // 移动到下一个敌人
+            } else if (enemy->_state == EnemyState::ARRIVED &&
+                       !enemy->_isArrivedCounted) {
+                _arrivedEnemies++;               // 记录到达的敌人数量
+                enemy->_isArrivedCounted = true; // 标记敌人已被计数
                 if (_arrivedEnemies >= 10) {
                     qDebug() << "Game Over: You have lost!";
-                    this->hide();
-                    _parent->show();
+                    this->hide();    // 隐藏当前窗口
+                    _parent->show(); // 显示父窗口
                     return;
                 }
+                // 如果敌人已到达终点且被计数，移除敌人
+                it = _enemies.erase(it);
+                delete enemy; // 释放敌人对象的内存
+            } else if (enemy->_state == EnemyState::DEAD) {
+                // 删除敌人
+                it = _enemies.erase(it);
+                delete enemy; // 释放敌人对象的内存
+            } else {
+                ++it; // 移动到下一个敌人
             }
         }
+
+        // 迭代器遍历塔，根据塔的状态执行不同的操作
+        for (auto it = _towers.begin(); it != _towers.end();) {
+            Tower *tower = *it;
+            if (tower->_hp_cur <= 0) {
+                tower->_state = TowerState::DEAD;
+                // 由坐标找到塔所在的格子，恢复格子的未种植
+                _map->_all_grids[tower->_y][tower->_x]->isplanted = false;
+            }
+
+            if (tower->_state == TowerState::IDLE) {
+                // 如果塔处于空闲状态，执行相应函数
+                tower->idle();
+                ++it;
+            } else if (tower->_state == TowerState::ATTACKING) {
+                // 如果塔正在攻击，执行相应的代码
+                tower->attack();
+                ++it;
+            } else if (tower->_state == TowerState::DEAD) {
+                // 如果塔已经死亡，删除塔
+                it = _towers.erase(it);
+                delete tower;
+            } else {
+                ++it; // 移动到下一个塔
+            }
+        }
+
         update(); // 确保在所有敌人都移动后再更新界面
     }
     if (event->timerId() == _spawnTimerID) {
         if (_spawnedEnemies < 10) {
-            std::vector<std::pair<int, int>> path = this->_map->_monsterPaths[0];
+            std::vector<std::pair<int, int>> path =
+                this->_map->_monsterPaths[0];
             Enemy *enemy = new Boar(100, 1, path, this->_map);
             this->_enemies.push_back(enemy);
             _spawnedEnemies++;
-            int randomSpawnInterval = QRandomGenerator::global()->bounded(4000) + 1000;
+            int randomSpawnInterval =
+                QRandomGenerator::global()->bounded(4000) + 1000;
             _spawnTimerID = startTimer(randomSpawnInterval);
         } else {
             killTimer(_spawnTimerID);
@@ -183,6 +268,7 @@ void GameWindow::mousePressEvent(QMouseEvent *event) {
     if (_isPaused) {
         QPoint clickPos = event->pos();
         bool enemySelected = false; // 标志变量，表示是否选中了怪物
+        bool towerSelected = false; // 标志变量，表示是否选中了塔
 
         // 检查 _enemies 是否为空
         if (!_enemies.empty()) {
@@ -197,8 +283,21 @@ void GameWindow::mousePressEvent(QMouseEvent *event) {
             }
         }
 
-        // 如果没有选中怪物，则检查格子
-        if (!enemySelected && _map != nullptr && !_map->_all_grids.empty()) {
+        // 检查 _towers 是否为空
+        if (!_towers.empty()) {
+            for (auto tower : _towers) {
+                // 检查 tower 是否为 nullptr
+                if (tower && tower->contains(clickPos)) {
+                    tower->highlight();
+                    update();
+                    towerSelected = true; // 设置标志变量
+                    break;
+                }
+            }
+        }
+
+        // 如果没有选中怪物和塔，则选中格子
+        if (!enemySelected && !towerSelected && !_map->_all_grids.empty()) {
             for (auto row : _map->_all_grids) {
                 for (auto grid : row) {
                     // 检查 grid 是否为 nullptr

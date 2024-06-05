@@ -1,15 +1,21 @@
 #ifndef BASE_TOWER_H
 #define BASE_TOWER_H
 
-
-#include "utils/enemy_state.h"
-#include "utils/grid_type.h"
 #include "unit/base_unit.h"
+#include "utils/enemy_state.h"
+#include "utils/tower_state.h"
 #include <vector>
 
 class Tower : public Unit {
   public:
     GridType _gridType;
+    TowerState _state;
+
+    virtual void attack() = 0;
+    virtual void idle() = 0;
+
+    // 绘图
+    virtual void draw(QPainter *painter) = 0;
 };
 
 #endif // BASE_TOWER_H

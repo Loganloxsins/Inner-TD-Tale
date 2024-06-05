@@ -14,6 +14,7 @@
 #include <vector>
 
 #include "include/utils/grid_type.h"
+// #include "unit/base_tower.h"
 
 using namespace std;
 
@@ -22,6 +23,7 @@ const string map_file = "../map_config_default.txt";
 const double PI = 3.14;
 const int GRID_SIZE = 100;
 
+class Tower;
 class Grid : public QGraphicsItem {
   public:
     // 绘制相关
@@ -43,8 +45,9 @@ class Grid : public QGraphicsItem {
     void highlight() { isHighlighted = !isHighlighted; };
 
     // 逻辑相关
-    GridType type;  // 格子类型
-    bool isplanted; // 是否种植塔 只有PATH和REMOTE才有意义
+    GridType type;           // 格子类型
+    bool isplanted;          // 是否种植塔 只有PATH和REMOTE才有意义
+    Tower *_tower = nullptr; // 如果种植，种植的塔的指针
 
     Grid();
 
