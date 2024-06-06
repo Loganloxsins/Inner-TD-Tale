@@ -11,11 +11,11 @@
 #include <QPixmap>
 #include <QRandomGenerator> // 添加头文件以使用随机数生成
 
-GameWindow::GameWindow(QWidget *parent)
+GameWindow::GameWindow(QWidget *parent, int levelIndex)
     : QDialog(parent), ui(new Ui::GameWindow), _parent(parent),
       _spawnedEnemies(0), _arrivedEnemies(0), _isPaused(false), _gameTimerID(0),
-      _spawnTimerID(0), _canBuffTower(true), _canBuffEnemy(true),
-      _selectedGrid(nullptr), _selectedUnit(nullptr) {
+      _spawnTimerID(0), _canBuffTower(false), _canBuffEnemy(false),
+      _selectedGrid(nullptr), _selectedUnit(nullptr), _levelIndex(levelIndex) {
     ui->setupUi(this);
     connect(ui->pushButton_SaveandBack, SIGNAL(clicked()), this,
             SLOT(onSaveandBackClicked()));
@@ -27,11 +27,37 @@ GameWindow::GameWindow(QWidget *parent)
             SLOT(onPlantRemoteTower()));
 
     connect(ui->pushButton_buffFury, SIGNAL(clicked()), this, SLOT(buffFury()));
+    connect(ui->pushButton_debuffFury, SIGNAL(clicked()), this,
+            SLOT(debuffFury()));
+    connect(ui->pushButton_buffIce, SIGNAL(clicked()), this, SLOT(buffIce()));
+    connect(ui->pushButton_debuffIce, SIGNAL(clicked()), this,
+            SLOT(debuffIce()));
+    connect(ui->pushButton_buffAoE, SIGNAL(clicked()), this, SLOT(buffAoE()));
+    connect(ui->pushButton_debuffAoE, SIGNAL(clicked()), this,
+            SLOT(debuffAoE()));
+    connect(ui->pushButton_buffBleed, SIGNAL(clicked()), this,
+            SLOT(buffBleed()));
+    connect(ui->pushButton_debuffBleed, SIGNAL(clicked()), this,
+            SLOT(debuffBleed()));
+    connect(ui->pushButton_buffJump, SIGNAL(clicked()), this, SLOT(buffJump()));
+    connect(ui->pushButton_debuffJump, SIGNAL(clicked()), this,
+            SLOT(debuffJump()));
+    connect(ui->pushButton_buffSpeed, SIGNAL(clicked()), this,
+            SLOT(buffSpeed()));
+    connect(ui->pushButton_debuffSpeed, SIGNAL(clicked()), this,
+            SLOT(debuffSpeed()));
 
     // 初始化地图
     this->_map = new Map();
-    QString filePath =
-        R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\data\map\map1.json)";
+    QString filePath = R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\data\map\map1.json)";
+    if (_levelIndex == 1) {
+        QString filePath =
+            R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\data\map\map1.json)";
+    } else if (_levelIndex == 2) {
+        QString filePath =
+            R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\data\map\map2.json)";
+    }
+
     if (this->_map->loadMap(filePath)) {
         qDebug() << "load map success";
     } else {
@@ -197,8 +223,9 @@ void GameWindow::buffFury() {
         }
 
         // 如果被选中的塔高亮，则检查塔类型，施加狂暴buff
-        if (tower->_isHighlighted) {
+        if (tower->_isHighlighted && tower->_buff_num < 2) {
             if (tower->_gridType == GridType::PATH) {
+                tower->_buff_num++;
                 qDebug() << "Buff melee tower here!";
                 // buff近战塔
                 tower->buffFury();
@@ -207,8 +234,344 @@ void GameWindow::buffFury() {
                 _selectedUnit = nullptr;
                 update();
             } else {
+
                 qDebug() << "Can't buff  here!";
             }
+        } else {
+            qDebug() << "Buff Num: " << tower->_buff_num;
+            qDebug() << "Can't buff  here!";
+        }
+    }
+}
+void GameWindow::debuffFury() {
+    if (_isPaused) {
+        // 只对选中的塔施加buff
+        // 输出选中塔的坐标，不能用格子的坐标替代
+        // 将unit转换为tower
+        Tower *tower = dynamic_cast<Tower *>(_selectedUnit);
+        if (tower) {
+            qDebug() << "selected tower: " << tower->_x << " " << tower->_y;
+        }
+
+        // 如果被选中的塔高亮，则检查塔类型，清除狂暴buff
+        if (tower->_isHighlighted &&
+            (tower->_buffSlot[0] == 0 || tower->_buffSlot[1] == 0)) {
+            if (tower->_gridType == GridType::PATH) {
+                tower->_buff_num--;
+                qDebug() << "Debuff melee tower here!";
+                // debuff近战塔
+                tower->debuffFury();
+                // 清除selectedGrid
+                tower->_isHighlighted = false;
+                _selectedUnit = nullptr;
+                update();
+            } else {
+                qDebug() << "Can't debuff  here!";
+            }
+        } else {
+            qDebug() << "Buff Num: " << tower->_buff_num;
+            qDebug() << "Can't buff  here!";
+        }
+    }
+}
+
+// ice
+void GameWindow::buffIce() {
+    if (_isPaused) {
+        // 只对选中的塔施加buff
+        // 输出选中塔的坐标，不能用格子的坐标替代
+        // 将unit转换为tower
+        Tower *tower = dynamic_cast<Tower *>(_selectedUnit);
+        if (tower) {
+            qDebug() << "selected tower: " << tower->_x << " " << tower->_y;
+        }
+
+        // 如果被选中的塔高亮，则检查塔类型，施加冰冻buff
+        if (tower->_isHighlighted && tower->_buff_num < 2) {
+            if (tower->_gridType == GridType::PATH) {
+                tower->_buff_num++;
+                qDebug() << "Buff PATH tower here!";
+                // buff远程塔
+                tower->buffIce();
+                // 清除selectedGrid
+                tower->_isHighlighted = false;
+                _selectedUnit = nullptr;
+                update();
+            } else {
+                qDebug() << "Can't buff  here!";
+            }
+        } else {
+            qDebug() << "Buff Num: " << tower->_buff_num;
+            qDebug() << "Can't buff  here!";
+        }
+    }
+}
+
+void GameWindow::debuffIce() {
+    if (_isPaused) {
+        // 只对选中的塔施加buff
+        // 输出选中塔的坐标，不能用格子的坐标替代
+        // 将unit转换为tower
+        Tower *tower = dynamic_cast<Tower *>(_selectedUnit);
+        if (tower) {
+            qDebug() << "selected tower: " << tower->_x << " " << tower->_y;
+        }
+
+        // 如果被选中的塔高亮，则检查塔类型，清除冰冻buff
+        if (tower->_isHighlighted &&
+            (tower->_buffSlot[0] == 1 || tower->_buffSlot[1] == 1)) {
+            if (tower->_gridType == GridType::PATH) {
+                tower->_buff_num--;
+                qDebug() << "Debuff PATH tower here!";
+                // debuff远程塔
+                tower->debuffIce();
+                // 清除selectedGrid
+                tower->_isHighlighted = false;
+                _selectedUnit = nullptr;
+                update();
+            } else {
+                qDebug() << "Can't debuff  here!";
+            }
+        } else {
+            qDebug() << "Buff Num: " << tower->_buff_num;
+            qDebug() << "Can't buff  here!";
+        }
+    }
+}
+
+// AoE
+void GameWindow::buffAoE() {
+    if (_isPaused) {
+        // 只对选中的塔施加buff
+        // 输出选中塔的坐标，不能用格子的坐标替代
+        // 将unit转换为tower
+        Tower *tower = dynamic_cast<Tower *>(_selectedUnit);
+        if (tower) {
+            qDebug() << "selected tower: " << tower->_x << " " << tower->_y;
+        }
+
+        // 如果被选中的塔高亮，则检查塔类型，施加范围伤害buff
+        if (tower->_isHighlighted && tower->_buff_num < 2) {
+            if (tower->_gridType == GridType::PATH) {
+                tower->_buff_num++;
+                qDebug() << "Buff PATH tower here!";
+                // buff远程塔
+                tower->buffAoE();
+                // 清除selectedGrid
+                tower->_isHighlighted = false;
+                _selectedUnit = nullptr;
+                update();
+            } else {
+                qDebug() << "Can't buff  here!";
+            }
+        } else {
+            qDebug() << "Buff Num: " << tower->_buff_num;
+            qDebug() << "Can't buff  here!";
+        }
+    }
+}
+
+void GameWindow::debuffAoE() {
+    if (_isPaused) {
+        // 只对选中的塔施加buff
+        // 输出选中塔的坐标，不能用格子的坐标替代
+        // 将unit转换为tower
+        Tower *tower = dynamic_cast<Tower *>(_selectedUnit);
+        if (tower) {
+            qDebug() << "selected tower: " << tower->_x << " " << tower->_y;
+        }
+
+        // 如果被选中的塔高亮，则检查塔类型，清除范围伤害buff
+        if (tower->_isHighlighted &&
+            (tower->_buffSlot[0] == 2 || tower->_buffSlot[1] == 2)) {
+            if (tower->_gridType == GridType::PATH) {
+                tower->_buff_num--;
+                qDebug() << "Debuff PATH tower here!";
+                // debuff远程塔
+                tower->debuffAoE();
+                // 清除selectedGrid
+                tower->_isHighlighted = false;
+                _selectedUnit = nullptr;
+                update();
+            } else {
+                qDebug() << "Can't debuff  here!";
+            }
+        } else {
+            qDebug() << "Buff Num: " << tower->_buff_num;
+            qDebug() << "Can't buff  here!";
+        }
+    }
+}
+
+// bleed
+void GameWindow::buffBleed() {
+    if (_isPaused) {
+        // 只对选中的塔施加buff
+        // 输出选中塔的坐标，不能用格子的坐标替代
+        // 将unit转换为tower
+        Tower *tower = dynamic_cast<Tower *>(_selectedUnit);
+        if (tower) {
+            qDebug() << "selected tower: " << tower->_x << " " << tower->_y;
+        }
+
+        // 如果被选中的塔高亮，则检查塔类型，施加流血buff
+        if (tower->_isHighlighted && tower->_buff_num < 2) {
+            if (tower->_gridType == GridType::REMOTE) {
+                tower->_buff_num++;
+                qDebug() << "Buff REMOTE tower here!";
+                // buff远程塔
+                tower->buffBleed();
+                // 清除selectedGrid
+                tower->_isHighlighted = false;
+                _selectedUnit = nullptr;
+                update();
+            } else {
+                qDebug() << "Can't buff  here!";
+            }
+        } else {
+            qDebug() << "Buff Num: " << tower->_buff_num;
+            qDebug() << "Can't buff  here!";
+        }
+    }
+}
+
+void GameWindow::debuffBleed() {
+    if (_isPaused) {
+        // 只对选中的塔施加buff
+        // 输出选中塔的坐标，不能用格子的坐标替代
+        // 将unit转换为tower
+        Tower *tower = dynamic_cast<Tower *>(_selectedUnit);
+        if (tower) {
+            qDebug() << "selected tower: " << tower->_x << " " << tower->_y;
+        }
+
+        // 如果被选中的塔高亮，则检查塔类型，清除流血buff
+        if (tower->_isHighlighted &&
+            (tower->_buffSlot[0] == 3 || tower->_buffSlot[1] == 3)) {
+            if (tower->_gridType == GridType::REMOTE) {
+                tower->_buff_num--;
+                qDebug() << "Debuff REMOTE tower here!";
+                // debuff远程塔
+                tower->debuffBleed();
+                // 清除selectedGrid
+                tower->_isHighlighted = false;
+                _selectedUnit = nullptr;
+                update();
+            } else {
+                qDebug() << "Can't debuff  here!";
+            }
+        } else {
+            qDebug() << "Buff Num: " << tower->_buff_num;
+            qDebug() << "Can't buff  here!";
+        }
+    }
+}
+
+// jump和speed是针对怪物的buff
+void GameWindow::buffJump() {
+    if (_isPaused) {
+        // 只对选中的怪物施加buff
+        // 输出选中怪物的坐标，不能用格子的坐标替代
+        // 将unit转换为enemy
+        Enemy *enemy = dynamic_cast<Enemy *>(_selectedUnit);
+        if (enemy) {
+            qDebug() << "selected enemy: " << enemy->_x << " " << enemy->_y;
+        }
+
+        // 如果被选中的怪物高亮，则检查怪物类型，施加闪现buff
+        if (enemy->_isHighlighted) {
+
+            qDebug() << "Buff jump enemy here!";
+            // buff怪物
+            enemy->buffJump();
+            // 清除selectedGrid
+            enemy->_isHighlighted = false;
+            _selectedUnit = nullptr;
+            update();
+
+        } else {
+            qDebug() << "Can't buff  here!";
+        }
+    }
+}
+
+void GameWindow::debuffJump() {
+    if (_isPaused) {
+        // 只对选中的怪物施加buff
+        // 输出选中怪物的坐标，不能用格子的坐标替代
+        // 将unit转换为enemy
+        Enemy *enemy = dynamic_cast<Enemy *>(_selectedUnit);
+        if (enemy) {
+            qDebug() << "selected enemy: " << enemy->_x << " " << enemy->_y;
+        }
+
+        // 如果被选中的怪物高亮，则检查怪物类型，清除闪现buff
+        if (enemy->_isHighlighted) {
+
+            qDebug() << "Debuff jump here!";
+            // debuff怪物
+            enemy->debuffJump();
+            // 清除selectedGrid
+            enemy->_isHighlighted = false;
+            _selectedUnit = nullptr;
+            update();
+
+        } else {
+            qDebug() << "Can't debuff jummp here!";
+        }
+    }
+}
+
+void GameWindow::buffSpeed() {
+    if (_isPaused) {
+        // 只对选中的怪物施加buff
+        // 输出选中怪物的坐标，不能用格子的坐标替代
+        // 将unit转换为enemy
+        Enemy *enemy = dynamic_cast<Enemy *>(_selectedUnit);
+        if (enemy) {
+            qDebug() << "selected enemy: " << enemy->_x << " " << enemy->_y;
+        }
+
+        // 如果被选中的怪物高亮，则检查怪物类型，施加神速buff
+        if (enemy->_isHighlighted) {
+
+            qDebug() << "Buff PATH enemy here!";
+            // buff怪物
+            enemy->buffSpeed();
+            // 清除selectedGrid
+            enemy->_isHighlighted = false;
+            _selectedUnit = nullptr;
+            update();
+
+        } else {
+            qDebug() << "Can't buff  here!";
+        }
+    }
+}
+
+void GameWindow::debuffSpeed() {
+    if (_isPaused) {
+        // 只对选中的怪物施加buff
+        // 输出选中怪物的坐标，不能用格子的坐标替代
+        // 将unit转换为enemy
+        Enemy *enemy = dynamic_cast<Enemy *>(_selectedUnit);
+        if (enemy) {
+            qDebug() << "selected enemy: " << enemy->_x << " " << enemy->_y;
+        }
+
+        // 如果被选中的怪物高亮，则检查怪物类型，清除神速buff
+        if (enemy->_isHighlighted) {
+
+            qDebug() << "Debuff speed here!";
+            // debuff怪物
+            enemy->debuffSpeed();
+            // 清除selectedGrid
+            enemy->_isHighlighted = false;
+            _selectedUnit = nullptr;
+            update();
+
+        } else {
+            qDebug() << "Can't debuff speed here!";
         }
     }
 }
@@ -222,12 +585,12 @@ void GameWindow::showEvent(QShowEvent *event) {
 void GameWindow::paintEvent(QPaintEvent *) {
 
     QPainter painter(this);
+    QString path =
+        R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\assets\bg_day.png)";
     // QString path =
-    //     R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\assets\BG-hd.png)";
-    // // QString path =
-    // //     R"(:\assets\BG-hd.png)";不行
-    // QPixmap pixmap(path);
-    // painter.drawPixmap(0, 0, this->width(), this->height(), pixmap);
+    //     R"(:\assets\BG-hd.png)";不行
+    QPixmap pixmap(path);
+    painter.drawPixmap(0, 0, this->width(), this->height(), pixmap);
 
     _map->drawMap(&painter); // 绘制地图
 
@@ -252,10 +615,13 @@ void GameWindow::timerEvent(QTimerEvent *event) {
             // 检查血量
             if (enemy->_hp_cur <= 0) {
                 enemy->_state = EnemyState::DEAD;
-                if (_canBuffTower == true) {
-                    std::cout << "你被剥夺了无限tower buff（记得改为获得）"
+                if (_canBuffTower == false) {
+                    // std::cout << "你被剥夺了无限tower buff（记得改为获得）"
+                    //           << std::endl;
+                    std::cout << "You're in luck! Auto pick gets unlimited "
+                                 "buff, buff tower"
                               << std::endl;
-                    _canBuffTower = false;
+                    _canBuffTower = true;
                 }
             }
 
@@ -296,10 +662,15 @@ void GameWindow::timerEvent(QTimerEvent *event) {
                 tower->_state = TowerState::DEAD;
                 // 由坐标找到塔所在的格子，恢复格子的未种植
                 _map->_all_grids[tower->_y][tower->_x]->isplanted = false;
-                if (_canBuffEnemy == true) {
+                if (_canBuffEnemy == false) {
                     std::cout << "你被剥夺了无限enemy buff（记得改为获得）"
                               << std::endl;
-                    _canBuffEnemy = false;
+                    // std::cout << "You're in unluck! Auto pick gets unlimited
+                    // "
+                    //              "buff, buff enemies"
+                    //           << std::endl;
+
+                    _canBuffEnemy = true;
                 }
             }
 
@@ -327,6 +698,16 @@ void GameWindow::timerEvent(QTimerEvent *event) {
         if (_spawnedEnemies < 10) {
             std::vector<std::pair<int, int>> path =
                 this->_map->_monsterPaths[0];
+            Enemy *enemy = new Boar(100, 1, path, this->_map);
+            this->_enemies.push_back(enemy);
+            _spawnedEnemies++;
+            int randomSpawnInterval =
+                QRandomGenerator::global()->bounded(4000) + 3000;
+            // int randomSpawnInterval = 1000;
+            _spawnTimerID = startTimer(randomSpawnInterval);
+        } else if (10 < _spawnedEnemies < 20) {
+            std::vector<std::pair<int, int>> path =
+                this->_map->_monsterPaths[1];
             Enemy *enemy = new Boar(100, 1, path, this->_map);
             this->_enemies.push_back(enemy);
             _spawnedEnemies++;

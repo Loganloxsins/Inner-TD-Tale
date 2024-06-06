@@ -16,6 +16,8 @@ class Boar : public Enemy {
     void move() override;
     void draw(QPainter *painter) override;
     void attack() override;
+    void applyBleedEffect(int damage, int duration) override;
+
 };
 
 #endif // BOAR_H

@@ -16,7 +16,7 @@ class GameWindow : public QDialog {
     Q_OBJECT
 
   public:
-    explicit GameWindow(QWidget *parent = nullptr);
+    explicit GameWindow(QWidget *parent = nullptr, int levelIndex=1);
     ~GameWindow();
 
     Map *_map;                               // 地图组件
@@ -40,6 +40,8 @@ class GameWindow : public QDialog {
     Grid *_selectedGrid; // 当前选中的格子
     Unit *_selectedUnit; // 当前选中的单位
 
+    int _levelIndex;
+
   public slots:
     void onSaveandBackClicked();
     void onPauseClicked();
@@ -47,11 +49,18 @@ class GameWindow : public QDialog {
     void onPlantRemoteTower(); // 种植远程塔按钮点击事件
 
     void buffFury();
-    // void buffIce();
-    // void buffAoE();
-    // void buffBleed();
-    // void buffJump();
-    // void buffSpeed();
+    void buffIce();
+    void buffAoE();
+    void buffBleed();
+    void buffJump();
+    void buffSpeed();
+
+    void debuffFury();
+    void debuffIce();
+    void debuffAoE();
+    void debuffBleed();
+    void debuffJump();
+    void debuffSpeed();
 
   private:
     Ui::GameWindow *ui;

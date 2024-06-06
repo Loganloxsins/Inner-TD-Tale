@@ -1,0 +1,10 @@
+-1 no
+0 buffFury
+1 ice 
+2 aoe
+3 bleed
+
+-1 no
+0 jump
+1 speed
+

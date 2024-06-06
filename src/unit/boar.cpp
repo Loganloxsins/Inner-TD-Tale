@@ -17,6 +17,9 @@ Boar::Boar(int hp, int speed, std::vector<std::pair<int, int>> path, Map *map) {
     _attackCoolDown = 0;
     _attackRange = 1;
     _damage = 10;
+    _jumpCoolDown = 3;
+    _buffSlot[0] = -1;
+    _buffSlot[1] = -1;
 
     // _target_tower = nullptr;
 
@@ -28,6 +31,26 @@ Boar::Boar(int hp, int speed, std::vector<std::pair<int, int>> path, Map *map) {
 }
 
 void Boar::move() {
+    if (_buffSlot[0] == 0 || _buffSlot[1] == 0) {
+        // 冷却最小为0
+        if (_jumpCoolDown > 0)
+            _jumpCoolDown--;
+        qDebug() << "cool down: " << _jumpCoolDown;
+    }
+
+    // 流血
+    if (_state != EnemyState::DEAD) {
+        if (_bleedDuration > 0) {
+            _hp_cur -= _bleedDamage;
+            _bleedDuration--;
+            // 输出流血伤害和剩余回合数
+            std::cout << "Bleed damage: " << _bleedDamage
+                      << " Remaining rounds: " << _bleedDuration << std::endl;
+            if (_hp_cur <= 0) {
+                _state = EnemyState::DEAD;
+            }
+        }
+    }
 
     // 注意：所有地图数据都是以 row col 的形式存储的
 
@@ -44,22 +67,60 @@ void Boar::move() {
             //          << isPlanted;
 
             if (isPlanted) {
-                _state = EnemyState::ATTACKING;
-                return;
+                if (_buffSlot[0] == 0 || _buffSlot[1] == 0) {
+                    if (_jumpCoolDown == 0) {
+                        _path_index++;
+                        _x = x_next;
+                        _y = y_next;
+                        _jumpCoolDown = 3;
+                        std::cout << "jump over this tower!" << std::endl;
+                    }
+                } else {
+                    _state = EnemyState::ATTACKING;
+                    return;
+                }
             } else {
-                _path_index++;
-                _x = x_next;
-                _y = y_next;
-                // qDebug() << "Boar is moving!";
+                if (_buffSlot[0] == 1 || _buffSlot[1] == 1) {
+                    _x = _path[_path_index + 2].first;
+                    _y = _path[_path_index + 2].second;
+                    _path_index += 2;
+                    // std::cout << "speed run!" << std::endl;
+                } else {
+                    _path_index++;
+                    _x = x_next;
+                    _y = y_next;
+                    // qDebug() << "Boar is moving!";
+                }
             }
         } else {
             _state = EnemyState::ARRIVED;
         }
     }
 }
+void Boar::applyBleedEffect(int damage, int rounds) {
+    _bleedDamage = damage;
+    _bleedDuration = rounds;
+}
 
 // 攻击函数，需要结合_attackSpeed攻击频率
 void Boar::attack() {
+    if (_buffSlot[0] == 0 || _buffSlot[1] == 0) {
+        if (_jumpCoolDown > 0)
+            _jumpCoolDown--;
+        qDebug() << "cool down: " << _jumpCoolDown;
+    }
+    if (_state != EnemyState::DEAD) {
+        if (_bleedDuration > 0) {
+            _hp_cur -= _bleedDamage;
+            _bleedDuration--;
+            std::cout << "Bleed damage: " << _bleedDamage
+                      << " Remaining rounds: " << _bleedDuration << std::endl;
+            if (_hp_cur <= 0) {
+                _state = EnemyState::DEAD;
+            }
+        }
+        // 其他更新逻辑
+    }
     // 塔在下一格
     int x_next = _path[_path_index + 1].first;
     int y_next = _path[_path_index + 1].second;

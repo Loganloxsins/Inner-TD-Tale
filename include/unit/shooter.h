@@ -10,4 +10,5 @@ class Shooter : public Tower {
     void draw(QPainter *painter) override;
     void idle() override;
     void attack() override;
+   
 };

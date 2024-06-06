@@ -65,7 +65,7 @@
     <string>放置远程塔</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_PlantMeele_2">
+  <widget class="QPushButton" name="pushButton_buffIce">
    <property name="geometry">
     <rect>
      <x>110</x>
@@ -78,7 +78,7 @@
     <string>加冰buff</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_Pause_2">
+  <widget class="QPushButton" name="pushButton_buffAoE">
    <property name="geometry">
     <rect>
      <x>200</x>
@@ -104,7 +104,7 @@
     <string>加狂暴buff</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_SaveandBack_2">
+  <widget class="QPushButton" name="pushButton_buffBleed">
    <property name="geometry">
     <rect>
      <x>290</x>
@@ -117,7 +117,7 @@
     <string>加流血buff</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_PlantMeele_3">
+  <widget class="QPushButton" name="pushButton_buffSpeed">
    <property name="geometry">
     <rect>
      <x>480</x>
@@ -130,7 +130,7 @@
     <string>加速buff</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_PlantRemote_3">
+  <widget class="QPushButton" name="pushButton_buffJump">
    <property name="geometry">
     <rect>
      <x>380</x>
@@ -143,7 +143,7 @@
     <string>加闪现buff</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_SaveandBack_3">
+  <widget class="QPushButton" name="pushButton_debuffBleed">
    <property name="geometry">
     <rect>
      <x>290</x>
@@ -153,10 +153,10 @@
     </rect>
    </property>
    <property name="text">
-    <string>卸狂暴buff</string>
+    <string>卸流血buff</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_Pause_3">
+  <widget class="QPushButton" name="pushButton_debuffAoE">
    <property name="geometry">
     <rect>
      <x>200</x>
@@ -166,10 +166,10 @@
     </rect>
    </property>
    <property name="text">
-    <string>卸狂暴buff</string>
+    <string>卸AOEbuff</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_PlantRemote_4">
+  <widget class="QPushButton" name="pushButton_debuffFury">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -182,7 +182,7 @@
     <string>卸狂暴buff</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_PlantMeele_4">
+  <widget class="QPushButton" name="pushButton_debuffSpeed">
    <property name="geometry">
     <rect>
      <x>480</x>
@@ -192,10 +192,10 @@
     </rect>
    </property>
    <property name="text">
-    <string>卸狂暴buff</string>
+    <string>卸加速buff</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_PlantRemote_5">
+  <widget class="QPushButton" name="pushButton_debuffJump">
    <property name="geometry">
     <rect>
      <x>380</x>
@@ -205,10 +205,10 @@
     </rect>
    </property>
    <property name="text">
-    <string>卸狂暴buff</string>
+    <string>卸闪现buff</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_PlantMeele_5">
+  <widget class="QPushButton" name="pushButton_debuffIce">
    <property name="geometry">
     <rect>
      <x>110</x>
@@ -218,7 +218,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>卸狂暴buff</string>
+    <string>卸冰buff</string>
    </property>
   </widget>
  </widget>

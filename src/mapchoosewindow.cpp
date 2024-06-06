@@ -11,7 +11,7 @@
 MapChooseWindow::MapChooseWindow(QWidget *parent)
     : QDialog(parent), ui(new Ui::MapChooseWindow), _parent(parent) {
     ui->setupUi(this);
-    _gameWindow = new GameWindow(this);
+    _gameWindow = new GameWindow(this, _levelIndex);
     connect(ui->pushButton_MapChoose, SIGNAL(clicked()), this,
             SLOT(onMapChooseClicked()));
     connect(ui->pushButton_Back, SIGNAL(clicked()), this,
@@ -48,9 +48,11 @@ void MapChooseWindow::onBackClicked() {
 void MapChooseWindow::onLevel1Clicked() {
     // Code to choose map
     qDebug() << "感谢您选择level1\n";
+    _levelIndex = 1;
 }
 
 void MapChooseWindow::onLevel2Clicked() {
     // Code to choose map
     qDebug() << "level2";
+    _levelIndex = 2;
 }

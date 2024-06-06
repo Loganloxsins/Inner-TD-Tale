@@ -68,6 +68,9 @@ class Unit {
     Map *_map;
     int _attackSpeed;
     int _attackCoolDown;
+    int _buff_num;
+    //int长度为2的数组，存储已经加的buff的种类
+    int _buffSlot[2];
 
     virtual bool isAlive() const { return _hp_cur > 0; }
     virtual void receiveDamage(int damage) {
