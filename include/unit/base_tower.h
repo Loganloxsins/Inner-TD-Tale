@@ -16,6 +16,7 @@ class Tower : public Unit {
 
     // 绘图
     virtual void draw(QPainter *painter) = 0;
+    virtual void buffFury() { _damage *= 10; }
 };
 
 #endif // BASE_TOWER_H
