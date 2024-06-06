@@ -49,12 +49,13 @@ GameWindow::GameWindow(QWidget *parent, int levelIndex)
 
     // 初始化地图
     this->_map = new Map();
-    QString filePath = R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\data\map\map1.json)";
+    QString filePath =
+        R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\data\map\map2.json)";
     if (_levelIndex == 1) {
-        QString filePath =
+        filePath =
             R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\data\map\map1.json)";
     } else if (_levelIndex == 2) {
-        QString filePath =
+        filePath =
             R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\data\map\map2.json)";
     }
 

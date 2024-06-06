@@ -14,7 +14,7 @@ class Map {
     std::vector<std::vector<int>> _gridMatrix;
     std::vector<std::vector<std::pair<int, int>>> _monsterPaths;
 
-    int levelIndex;
+
 
     // 构造函数
     Map();

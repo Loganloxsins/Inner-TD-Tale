@@ -7,11 +7,11 @@
 #include <QMessageBox>
 
 #include "map/map.h"
+#include <iostream>
 
 MapChooseWindow::MapChooseWindow(QWidget *parent)
     : QDialog(parent), ui(new Ui::MapChooseWindow), _parent(parent) {
     ui->setupUi(this);
-    _gameWindow = new GameWindow(this, _levelIndex);
     connect(ui->pushButton_MapChoose, SIGNAL(clicked()), this,
             SLOT(onMapChooseClicked()));
     connect(ui->pushButton_Back, SIGNAL(clicked()), this,
@@ -22,6 +22,8 @@ MapChooseWindow::MapChooseWindow(QWidget *parent)
             SLOT(onLevel1Clicked()));
     connect(ui->pushButton_Level2, SIGNAL(clicked()), this,
             SLOT(onLevel2Clicked()));
+
+    _gameWindow = nullptr;
 }
 
 MapChooseWindow::~MapChooseWindow() { delete ui; }
@@ -32,10 +34,12 @@ void MapChooseWindow::onMapChooseClicked() {
 }
 
 void MapChooseWindow::onEnterClicked() {
-    // Code to enter the game
-    qDebug() << "enter";
-    _gameWindow->show();
-    this->hide();
+    if (_gameWindow == nullptr) {
+        std::cout << "please a leavel" << std::endl;
+    } else {
+        _gameWindow->show();
+        this->hide();
+    }
 }
 
 void MapChooseWindow::onBackClicked() {
@@ -46,13 +50,11 @@ void MapChooseWindow::onBackClicked() {
 }
 
 void MapChooseWindow::onLevel1Clicked() {
-    // Code to choose map
-    qDebug() << "感谢您选择level1\n";
-    _levelIndex = 1;
+    std::cout << "creating map 1" << std::endl;
+    _gameWindow = new GameWindow(this, 1);
 }
 
 void MapChooseWindow::onLevel2Clicked() {
-    // Code to choose map
-    qDebug() << "level2";
-    _levelIndex = 2;
+    std::cout << "creating map 2" << std::endl;
+    _gameWindow = new GameWindow(this, 2);
 }

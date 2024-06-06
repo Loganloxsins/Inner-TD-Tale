@@ -14,7 +14,6 @@ class MapChooseWindow : public QDialog {
   public:
     explicit MapChooseWindow(QWidget *parent = nullptr);
     ~MapChooseWindow();
-    int _levelIndex;
 
   public slots:
     void onMapChooseClicked();
