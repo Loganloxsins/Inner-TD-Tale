@@ -6,11 +6,16 @@
 #include "unit/shooter.h"
 #include <QDebug>
 #include <QDir>
+#include <QFile>
+#include <QFileDialog>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QMessageBox>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPixmap>
-#include <QRandomGenerator> // 添加头文件以使用随机数生成
-
+#include <QRandomGenerator>
 GameWindow::GameWindow(QWidget *parent, int levelIndex)
     : QDialog(parent), ui(new Ui::GameWindow), _parent(parent),
       _spawnedEnemies(0), _arrivedEnemies(0), _isPaused(false), _gameTimerID(0),
@@ -46,7 +51,8 @@ GameWindow::GameWindow(QWidget *parent, int levelIndex)
             SLOT(buffSpeed()));
     connect(ui->pushButton_debuffSpeed, SIGNAL(clicked()), this,
             SLOT(debuffSpeed()));
-
+    connect(ui->pushButton_LoadSave, SIGNAL(clicked()), this,
+            SLOT(onLoadSaveClicked()));
     // 初始化地图
     this->_map = new Map();
     QString filePath =
@@ -84,11 +90,231 @@ GameWindow::~GameWindow() {
 // SLOT函数
 
 void GameWindow::onSaveandBackClicked() {
-    // Code to save and back
-    qDebug() << "save and back";
+    _isPaused = true;
     this->hide();
     _parent->show();
+
+    // 创建JSON对象并保存当前游戏状态
+    QJsonObject gameState;
+    gameState["spawnedEnemies"] = _spawnedEnemies;
+    gameState["arrivedEnemies"] = _arrivedEnemies;
+    gameState["levelIndex"] = _levelIndex;
+    gameState["isPaused"] = _isPaused;
+    gameState["canBuffTower"] = _canBuffTower;
+    gameState["canBuffEnemy"] = _canBuffEnemy;
+
+    // 保存敌人数据
+    QJsonArray enemiesArray;
+    for (auto enemy : _enemies) {
+        QJsonObject enemyObject;
+        // 现有的属性
+        enemyObject["x"] = enemy->_x;
+        enemyObject["y"] = enemy->_y;
+
+        // 添加其他Enemy相关属性
+        enemyObject["state"] = static_cast<int>(enemy->_state);
+        enemyObject["hp_cur"] = enemy->_hp_cur;
+
+        enemyObject["isArrivedCounted"] = enemy->_isArrivedCounted;
+        enemyObject["bleedDamage"] = enemy->_bleedDamage;
+        enemyObject["bleedDuration"] = enemy->_bleedDuration;
+        enemyObject["jumpCoolDown"] = enemy->_jumpCoolDown;
+        enemyObject["buff_num"] = enemy->_buff_num;
+
+        // 处理长度为2的buff种类数组
+        QJsonArray buffSlotArray;
+        for (int i = 0; i < 2; ++i) {
+            buffSlotArray.append(enemy->_buffSlot[i]);
+        }
+        enemyObject["buffSlot"] = buffSlotArray;
+
+        enemiesArray.append(enemyObject);
+    }
+    gameState["enemies"] = enemiesArray;
+
+    // 保存塔的数据
+    QJsonArray towersArray;
+    for (auto tower : _towers) {
+        QJsonObject towerObject;
+        // 现有的属性
+        towerObject["x"] = tower->_x;
+        towerObject["y"] = tower->_y;
+        towerObject["hp_cur"] = tower->_hp_cur;
+        towerObject["buff_num"] = tower->_buff_num;
+
+        // 新增的属性
+        towerObject["gridType"] =
+            static_cast<int>(tower->_gridType); // 假设GridType是一个枚举类型
+        towerObject["state"] =
+            static_cast<int>(tower->_state); // 假设TowerState是一个枚举类型
+
+        // 处理长度为2的buff种类数组
+        QJsonArray buffSlotArray;
+        for (int i = 0; i < 2; ++i) {
+            buffSlotArray.append(tower->_buffSlot[i]);
+        }
+        towerObject["buffSlot"] = buffSlotArray;
+
+        towersArray.append(towerObject);
+    }
+    gameState["towers"] = towersArray;
+
+    // 将JSON对象写入绝对路径文件
+    QString filePath =
+        R"(E:/MyProject/s6/cpp_final_proj/Inner-TD-Tale/data/saves/save.json)";
+    QFile saveFile(filePath);
+    if (saveFile.open(QIODevice::WriteOnly)) {
+        QJsonDocument saveDoc(gameState);
+        saveFile.write(saveDoc.toJson());
+        saveFile.close();
+    } else {
+        qWarning("Couldn't open save file.");
+    }
 }
+
+void GameWindow::onLoadSaveClicked() {
+    _isPaused = true;
+    QString dialogTitle = "Select Save File"; // 对话框标题
+    QString defaultDir = QDir::currentPath(); // 默认打开的目录
+    QString fileFilter =
+        "JSON Save Files (*.json);;All Files (*.*)"; // 修改过滤器以查找.json文件
+
+    // 弹出文件选择对话框并获取选中的文件路径
+    QString selectedFile =
+        QFileDialog::getOpenFileName(this, dialogTitle, defaultDir, fileFilter);
+
+    // 检查是否选择了文件
+    if (!selectedFile.isEmpty()) {
+        qDebug() << "Selected JSON file:" << selectedFile;
+
+        // 尝试打开并读取JSON文件
+        QFile jsonFile(selectedFile);
+        if (jsonFile.open(QIODevice::ReadOnly)) {
+            // 读取文件内容
+            QByteArray jsonData = jsonFile.readAll();
+
+            // 关闭文件
+            jsonFile.close();
+
+            // 使用QJsonDocument解析JSON数据
+            QJsonParseError parseError;
+            QJsonDocument jsonDoc =
+                QJsonDocument::fromJson(jsonData, &parseError);
+
+            if (parseError.error == QJsonParseError::NoError) {
+                // JSON解析成功
+                qDebug() << "JSON data loaded successfully";
+
+                QJsonObject gameState = jsonDoc.object();
+
+                // 恢复游戏状态
+                _spawnedEnemies = gameState["spawnedEnemies"].toInt();
+                _arrivedEnemies = gameState["arrivedEnemies"].toInt();
+                _levelIndex = gameState["levelIndex"].toInt();
+                _isPaused = gameState["isPaused"].toBool();
+                _canBuffTower = gameState["canBuffTower"].toBool();
+                _canBuffEnemy = gameState["canBuffEnemy"].toBool();
+
+                // 恢复敌人数据
+                _enemies.clear();
+                QJsonArray enemiesArray = gameState["enemies"].toArray();
+                for (auto enemyValue : enemiesArray) {
+                    QJsonObject enemyObject = enemyValue.toObject();
+                    Enemy *enemy = nullptr;
+
+                    QString enemyType = enemyObject["enemyType"].toString();
+                    if (enemyType == "Boar") {
+                        std::vector<std::pair<int, int>> path =
+                            this->_map->_monsterPaths[0];
+                        enemy = new Boar(enemyObject["hp_cur"].toInt(), 1, path,
+                                         _map); // 假设speed为1
+                    }
+                    // 根据需要添加其他敌人类型
+
+                    if (enemy) {
+                        enemy->_x = enemyObject["x"].toDouble();
+                        enemy->_y = enemyObject["y"].toDouble();
+                        enemy->_state = static_cast<EnemyState>(
+                            enemyObject["state"].toInt());
+                        enemy->_hp_cur = enemyObject["hp_cur"].toInt();
+                        enemy->_isArrivedCounted =
+                            enemyObject["isArrivedCounted"].toBool();
+                        enemy->_bleedDamage =
+                            enemyObject["bleedDamage"].toInt();
+                        enemy->_bleedDuration =
+                            enemyObject["bleedDuration"].toInt();
+                        enemy->_jumpCoolDown =
+                            enemyObject["jumpCoolDown"].toInt();
+                        enemy->_buff_num = enemyObject["buff_num"].toInt();
+
+                        QJsonArray buffSlotArray =
+                            enemyObject["buffSlot"].toArray();
+                        for (int i = 0; i < 2; ++i) {
+                            enemy->_buffSlot[i] = buffSlotArray[i].toInt();
+                        }
+
+                        _enemies.push_back(enemy);
+                    }
+                }
+
+                // 恢复塔的数据
+                _towers.clear();
+                QJsonArray towersArray = gameState["towers"].toArray();
+                for (auto towerValue : towersArray) {
+                    QJsonObject towerObject = towerValue.toObject();
+                    Tower *tower = nullptr;
+
+                    QString towerType = towerObject["towerType"].toString();
+                    if (towerType == "Knight") {
+                        tower =
+                            new Knight(towerObject["x"].toDouble(),
+                                       towerObject["y"].toDouble(), _enemies);
+                    } else if (towerType == "Shooter") {
+                        tower =
+                            new Shooter(towerObject["x"].toDouble(),
+                                        towerObject["y"].toDouble(), _enemies);
+                    }
+
+                    if (tower) {
+                        tower->_hp_cur = towerObject["hp_cur"].toInt();
+                        tower->_buff_num = towerObject["buff_num"].toInt();
+                        tower->_gridType = static_cast<GridType>(
+                            towerObject["gridType"].toInt());
+                        tower->_state = static_cast<TowerState>(
+                            towerObject["state"].toInt());
+
+                        QJsonArray buffSlotArray =
+                            towerObject["buffSlot"].toArray();
+                        for (int i = 0; i < 2; ++i) {
+                            tower->_buffSlot[i] = buffSlotArray[i].toInt();
+                        }
+
+                        _towers.push_back(tower);
+                    }
+                }
+
+                // 恢复其他游戏状态
+                // ...（根据需要添加其他状态的恢复）
+
+                // 更新游戏界面
+                update();
+            } else {
+                // JSON解析错误，给出提示
+                QMessageBox::critical(
+                    this, "Error",
+                    "Failed to parse the selected JSON file: " +
+                        parseError.errorString());
+            }
+        } else {
+            // 文件打开失败，给出提示
+            QMessageBox::critical(this, "Error",
+                                  "Failed to open the selected file.");
+        }
+    } else {
+        qDebug() << "No file selected";
+    }
+}
+
 void GameWindow::onPauseClicked() {
     _isPaused = !_isPaused;
     if (_isPaused) {
