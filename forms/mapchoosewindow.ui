@@ -22,7 +22,7 @@
       </font>
      </property>
      <property name="text">
-      <string>当前地图：xxx.json</string>
+      <string>请选择地图（关卡）后，再点击进入关卡</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -32,7 +32,7 @@
    <item>
     <widget class="QPushButton" name="pushButton_MapChoose">
      <property name="text">
-      <string>选择地图（暂时不用）</string>
+      <string>没用按钮</string>
      </property>
     </widget>
    </item>

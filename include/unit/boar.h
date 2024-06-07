@@ -11,7 +11,7 @@ class Boar : public Enemy {
     // vector<Tower *> &_tower_all; // 场景中所有塔
     // Tower *_target_tower; // 要攻击的目标敌人 可以有不同的选择策略
 
-    Boar(int hp, int speed, std::vector<std::pair<int, int>> path, Map *map);
+    Boar( std::vector<std::pair<int, int>> path, Map *map);
 
     void move() override;
     void draw(QPainter *painter) override;

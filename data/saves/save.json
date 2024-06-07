@@ -1,0 +1,81 @@
+{
+    "arrivedEnemies": 0,
+    "canBuffEnemy": false,
+    "canBuffTower": false,
+    "enemies": [
+        {
+            "bleedDamage": 0,
+            "bleedDuration": 0,
+            "buffSlot": [
+                0,
+                1
+            ],
+            "buff_num": 0,
+            "hp_cur": 95,
+            "isArrivedCounted": false,
+            "jumpCoolDown": 0,
+            "state": 1,
+            "x": 6,
+            "y": 5
+        },
+        {
+            "bleedDamage": 0,
+            "bleedDuration": 0,
+            "buffSlot": [
+                -1,
+                -1
+            ],
+            "buff_num": 0,
+            "hp_cur": 70,
+            "isArrivedCounted": false,
+            "jumpCoolDown": 3,
+            "state": 2,
+            "x": 10,
+            "y": 2
+        },
+        {
+            "bleedDamage": 0,
+            "bleedDuration": 0,
+            "buffSlot": [
+                -1,
+                -1
+            ],
+            "buff_num": 0,
+            "hp_cur": 100,
+            "isArrivedCounted": false,
+            "jumpCoolDown": 3,
+            "state": 1,
+            "x": 8,
+            "y": 0
+        }
+    ],
+    "isPaused": true,
+    "levelIndex": 1,
+    "spawnedEnemies": 3,
+    "towers": [
+        {
+            "buffSlot": [
+                -1,
+                -1
+            ],
+            "buff_num": 0,
+            "gridType": 1,
+            "hp_cur": 100,
+            "state": 0,
+            "x": 11,
+            "y": 2
+        },
+        {
+            "buffSlot": [
+                -1,
+                -1
+            ],
+            "buff_num": 0,
+            "gridType": 2,
+            "hp_cur": 200,
+            "state": 0,
+            "x": 8,
+            "y": 4
+        }
+    ]
+}

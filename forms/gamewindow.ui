@@ -221,6 +221,19 @@
     <string>卸冰buff</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_LoadSave">
+   <property name="geometry">
+    <rect>
+     <x>1020</x>
+     <y>60</y>
+     <width>81</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>载入存档</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

@@ -16,7 +16,7 @@ class GameWindow : public QDialog {
     Q_OBJECT
 
   public:
-    explicit GameWindow(QWidget *parent = nullptr, int levelIndex=1);
+    explicit GameWindow(QWidget *parent = nullptr, int levelIndex = 1);
     ~GameWindow();
 
     Map *_map;                               // 地图组件
@@ -44,6 +44,7 @@ class GameWindow : public QDialog {
 
   public slots:
     void onSaveandBackClicked();
+    void onLoadSaveClicked();
     void onPauseClicked();
     void onPlantMeleeTower();  // 种植近战塔按钮点击事件
     void onPlantRemoteTower(); // 种植远程塔按钮点击事件

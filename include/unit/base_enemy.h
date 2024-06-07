@@ -10,7 +10,6 @@
 class Enemy : public Unit {
 
   public:
-    int _speed;
     // float _targetX, _targetY; // 目标位置
     std::vector<std::pair<int, int>> _path;
     int _path_index;

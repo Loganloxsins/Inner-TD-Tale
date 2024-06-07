@@ -4,11 +4,8 @@
 #include <QPainter>
 #include <QPoint>
 #include <vector>
-Boar::Boar(int hp, int speed, std::vector<std::pair<int, int>> path, Map *map) {
-    // _tower_all = tower_all;
-    _hp_full = hp;
-    _hp_cur = hp;
-    _speed = speed;
+Boar::Boar(std::vector<std::pair<int, int>> path, Map *map) {
+    _hp_full = _hp_cur = 100;
     _path = path;
     _path_index = 0;
     _state = EnemyState::MOVING;

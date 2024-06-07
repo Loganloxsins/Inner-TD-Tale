@@ -3,6 +3,9 @@
 Shooter::Shooter(int x, int y, vector<Enemy *> &enemies) : _enemies(enemies) {
     _x = x;
     _y = y;
+    int hp = 200;
+    _hp_full = hp;
+    _hp_cur = hp;
     _gridType = GridType::REMOTE;
     _state = TowerState::IDLE;
     _attackRange = 2;
@@ -10,6 +13,9 @@ Shooter::Shooter(int x, int y, vector<Enemy *> &enemies) : _enemies(enemies) {
     _attackSpeed = 1;
     _attackCoolDown = 0;
     _target_enemy = nullptr;
+    _buff_num = 0;
+    _buffSlot[0] = -1;
+    _buffSlot[1] = -1;
     _pic_path =
         R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\assets\Fighter.png)";
 }

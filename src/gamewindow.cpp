@@ -144,9 +144,8 @@ void GameWindow::onSaveandBackClicked() {
 
         // 新增的属性
         towerObject["gridType"] =
-            static_cast<int>(tower->_gridType); // 假设GridType是一个枚举类型
-        towerObject["state"] =
-            static_cast<int>(tower->_state); // 假设TowerState是一个枚举类型
+            static_cast<int>(tower->_gridType); 
+        towerObject["state"] =0;
 
         // 处理长度为2的buff种类数组
         QJsonArray buffSlotArray;
@@ -220,20 +219,15 @@ void GameWindow::onLoadSaveClicked() {
                 QJsonArray enemiesArray = gameState["enemies"].toArray();
                 for (auto enemyValue : enemiesArray) {
                     QJsonObject enemyObject = enemyValue.toObject();
-                    Enemy *enemy = nullptr;
+                    std::vector<std::pair<int, int>> path =
+                        this->_map->_monsterPaths[0];
+                    Enemy *enemy = new Boar(path, _map);
 
-                    QString enemyType = enemyObject["enemyType"].toString();
-                    if (enemyType == "Boar") {
-                        std::vector<std::pair<int, int>> path =
-                            this->_map->_monsterPaths[0];
-                        enemy = new Boar(enemyObject["hp_cur"].toInt(), 1, path,
-                                         _map); // 假设speed为1
-                    }
                     // 根据需要添加其他敌人类型
 
                     if (enemy) {
-                        enemy->_x = enemyObject["x"].toDouble();
-                        enemy->_y = enemyObject["y"].toDouble();
+                        enemy->_x = enemyObject["x"].toInt();
+                        enemy->_y = enemyObject["y"].toInt();
                         enemy->_state = static_cast<EnemyState>(
                             enemyObject["state"].toInt());
                         enemy->_hp_cur = enemyObject["hp_cur"].toInt();
@@ -262,19 +256,18 @@ void GameWindow::onLoadSaveClicked() {
                 QJsonArray towersArray = gameState["towers"].toArray();
                 for (auto towerValue : towersArray) {
                     QJsonObject towerObject = towerValue.toObject();
+
                     Tower *tower = nullptr;
 
-                    QString towerType = towerObject["towerType"].toString();
-                    if (towerType == "Knight") {
-                        tower =
-                            new Knight(towerObject["x"].toDouble(),
-                                       towerObject["y"].toDouble(), _enemies);
-                    } else if (towerType == "Shooter") {
-                        tower =
-                            new Shooter(towerObject["x"].toDouble(),
-                                        towerObject["y"].toDouble(), _enemies);
-                    }
+                    int gridType = towerObject["gridType"].toInt();
 
+                    if (gridType == 1) {
+                        tower = new Knight(towerObject["x"].toInt(),
+                                           towerObject["y"].toInt(), _enemies);
+                    } else if (gridType == 2) {
+                        tower = new Shooter(towerObject["x"].toInt(),
+                                            towerObject["y"].toInt(), _enemies);
+                    }
                     if (tower) {
                         tower->_hp_cur = towerObject["hp_cur"].toInt();
                         tower->_buff_num = towerObject["buff_num"].toInt();
@@ -292,6 +285,20 @@ void GameWindow::onLoadSaveClicked() {
                         _towers.push_back(tower);
                     }
                 }
+
+                // 恢复计时器
+                qDebug() << "_gameTimerID: " << _gameTimerID;
+                qDebug() << "_spawnTimerID: " << _spawnTimerID;
+                if (_gameTimerID != 0) {
+                    killTimer(_gameTimerID);
+                }
+                if (_spawnTimerID != 0) {
+                    killTimer(_spawnTimerID);
+                }
+                _spawnTimerID = startTimer(3000);
+                _gameTimerID = startTimer(1000);
+                qDebug() << "_gameTimerID: " << _gameTimerID;
+                qDebug() << "_spawnTimerID: " << _spawnTimerID;
 
                 // 恢复其他游戏状态
                 // ...（根据需要添加其他状态的恢复）
@@ -864,7 +871,8 @@ void GameWindow::timerEvent(QTimerEvent *event) {
                 _arrivedEnemies++;               // 记录到达的敌人数量
                 enemy->_isArrivedCounted = true; // 标记敌人已被计数
                 if (_arrivedEnemies >= 10) {
-                    qDebug() << "Game Over: You have lost!";
+                    // 弹出失败窗口
+                    QMessageBox::information(this, "Game Over", "You Lose!");
                     this->hide();    // 隐藏当前窗口
                     _parent->show(); // 显示父窗口
                     return;
@@ -890,12 +898,11 @@ void GameWindow::timerEvent(QTimerEvent *event) {
                 // 由坐标找到塔所在的格子，恢复格子的未种植
                 _map->_all_grids[tower->_y][tower->_x]->isplanted = false;
                 if (_canBuffEnemy == false) {
-                    std::cout << "你被剥夺了无限enemy buff（记得改为获得）"
-                              << std::endl;
-                    // std::cout << "You're in unluck! Auto pick gets unlimited
-                    // "
-                    //              "buff, buff enemies"
+                    // std::cout << "你被剥夺了无限enemy buff（记得改为获得）"
                     //           << std::endl;
+                    std::cout << "You're in unluck! Auto pick gets unlimited "
+                                 "buff, buff enemies"
+                              << std::endl;
 
                     _canBuffEnemy = true;
                 }
@@ -925,7 +932,7 @@ void GameWindow::timerEvent(QTimerEvent *event) {
         if (_spawnedEnemies < 10) {
             std::vector<std::pair<int, int>> path =
                 this->_map->_monsterPaths[0];
-            Enemy *enemy = new Boar(100, 1, path, this->_map);
+            Enemy *enemy = new Boar(path, this->_map);
             this->_enemies.push_back(enemy);
             _spawnedEnemies++;
             int randomSpawnInterval =
@@ -935,7 +942,7 @@ void GameWindow::timerEvent(QTimerEvent *event) {
         } else if (10 < _spawnedEnemies < 20) {
             std::vector<std::pair<int, int>> path =
                 this->_map->_monsterPaths[1];
-            Enemy *enemy = new Boar(100, 1, path, this->_map);
+            Enemy *enemy = new Boar(path, this->_map);
             this->_enemies.push_back(enemy);
             _spawnedEnemies++;
             int randomSpawnInterval =

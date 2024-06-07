@@ -23,7 +23,7 @@
        </font>
       </property>
       <property name="text">
-       <string>塔防游戏，当前存档：xxx.json</string>
+       <string>塔防游戏</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -34,13 +34,6 @@
      <widget class="QPushButton" name="pushButton_Start">
       <property name="text">
        <string>开始游戏</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QPushButton" name="pushButton_LoadSave">
-      <property name="text">
-       <string>载入存档</string>
       </property>
      </widget>
     </item>
