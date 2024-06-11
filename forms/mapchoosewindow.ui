@@ -32,7 +32,7 @@
    <item>
     <widget class="QPushButton" name="pushButton_MapChoose">
      <property name="text">
-      <string>没用按钮</string>
+      <string>地图选择 </string>
      </property>
     </widget>
    </item>

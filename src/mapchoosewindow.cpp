@@ -29,8 +29,32 @@ MapChooseWindow::MapChooseWindow(QWidget *parent)
 MapChooseWindow::~MapChooseWindow() { delete ui; }
 
 void MapChooseWindow::onMapChooseClicked() {
-    // Code to choose map
-    qDebug() << "map choose";
+    QString dialogTitle = "Select Map File";  // 对话框标题
+    QString defaultDir = QDir::currentPath(); // 默认打开的目录
+    QString fileFilter =
+        "JSON Save Files (*.json);;All Files (*.*)"; // 修改过滤器以查找.json文件
+
+    // 弹出文件选择对话框并获取选中的文件路径
+    QString selectedFile =
+        QFileDialog::getOpenFileName(this, dialogTitle, defaultDir, fileFilter);
+
+    // 从字符串最后一个斜线后面开始提取文件名
+    // 提取文件名 Selected file:
+    // "E:/MyProject/s6/cpp_final_proj/Inner-TD-Tale/data/map/map1.json"
+    // 提取文件名 Selected file:  "map1.json"
+    QString fileName = selectedFile.mid(selectedFile.lastIndexOf("/") + 1);
+
+    // 如果fileName是“map1`.josn” 则创建地图1
+    if (fileName == "map1.json") {
+        onLevel1Clicked();
+
+    } else if (fileName == "map2.json") {
+        onLevel2Clicked();
+    } else {
+        // 弹出窗口显示 请选择正确的地图
+        QMessageBox::information(this, "please choose correct map",
+                                 "please choose correct map");
+    }
 }
 
 void MapChooseWindow::onEnterClicked() {
@@ -43,18 +67,20 @@ void MapChooseWindow::onEnterClicked() {
 }
 
 void MapChooseWindow::onBackClicked() {
-    // Code to return to the main menu
-    qDebug() << "back";
     _parent->show();
     this->hide();
 }
 
 void MapChooseWindow::onLevel1Clicked() {
+    // 弹出窗口显示 感谢选择地图1
+    QMessageBox::information(this, "thank you", "you choose map 1");
     std::cout << "creating map 1" << std::endl;
     _gameWindow = new GameWindow(this, 1);
 }
 
 void MapChooseWindow::onLevel2Clicked() {
+    // 弹出窗口显示 感谢选择地图1
+    QMessageBox::information(this, "thank you", "you choose map 2");
     std::cout << "creating map 2" << std::endl;
     _gameWindow = new GameWindow(this, 2);
 }
