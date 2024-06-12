@@ -1,9 +1,11 @@
 #include "gamewindow.h"
+#include "globals.h"
 #include "map/map.h"
 #include "ui_gamewindow.h"
 #include "unit/boar.h"
 #include "unit/knight.h"
 #include "unit/shooter.h"
+
 #include <QDebug>
 #include <QDir>
 #include <QFile>
@@ -20,7 +22,8 @@ GameWindow::GameWindow(QWidget *parent, int levelIndex)
     : QDialog(parent), ui(new Ui::GameWindow), _parent(parent),
       _spawnedEnemies(0), _arrivedEnemies(0), _isPaused(false), _gameTimerID(0),
       _spawnTimerID(0), _canBuffTower(false), _canBuffEnemy(false),
-      _selectedGrid(nullptr), _selectedUnit(nullptr), _levelIndex(levelIndex) {
+      _selectedGrid(nullptr), _selectedUnit(nullptr), _levelIndex(levelIndex),
+      _holyWater(10) {
     ui->setupUi(this);
     connect(ui->pushButton_SaveandBack, SIGNAL(clicked()), this,
             SLOT(onSaveandBackClicked()));
@@ -53,6 +56,8 @@ GameWindow::GameWindow(QWidget *parent, int levelIndex)
             SLOT(debuffSpeed()));
     connect(ui->pushButton_LoadSave, SIGNAL(clicked()), this,
             SLOT(onLoadSaveClicked()));
+    connect(ui->pushButton_HpMedicine, SIGNAL(clicked()), this,
+            SLOT(onHpMedicineClicked()));
     // 初始化地图
     this->_map = new Map();
     QString filePath =
@@ -87,7 +92,32 @@ GameWindow::~GameWindow() {
     }
 }
 
+// 绘图事件
+void GameWindow::updateLabels() {
+
+    this->ui->label_Heart->setText("生命：" +
+                                   QString::number(10 - _arrivedEnemies));
+    this->ui->label_Hpmedicine->setText("加血道具数量：" +
+                                        QString::number(g_hpmedicine_num));
+    this->ui->label_Coins->setText("商店金币数量：" + QString::number(g_coins));
+
+    this->ui->label_HolyWater->setText("圣水数量：" +
+                                       QString::number(_holyWater));
+}
+
 // SLOT函数
+void GameWindow::onHpMedicineClicked() {
+    if (g_hpmedicine_num > 0) {
+        g_hpmedicine_num--;
+        // 遍历所有塔，血量加满
+        for (auto tower : _towers) {
+            tower->_hp_cur = tower->_hp_full;
+        }
+        updateLabels();
+    } else {
+        QMessageBox::information(this, "提示", "血瓶数量不足");
+    }
+}
 
 void GameWindow::onSaveandBackClicked() {
     _isPaused = true;
@@ -143,9 +173,8 @@ void GameWindow::onSaveandBackClicked() {
         towerObject["buff_num"] = tower->_buff_num;
 
         // 新增的属性
-        towerObject["gridType"] =
-            static_cast<int>(tower->_gridType); 
-        towerObject["state"] =0;
+        towerObject["gridType"] = static_cast<int>(tower->_gridType);
+        towerObject["state"] = 0;
 
         // 处理长度为2的buff种类数组
         QJsonArray buffSlotArray;
@@ -213,6 +242,7 @@ void GameWindow::onLoadSaveClicked() {
                 _isPaused = gameState["isPaused"].toBool();
                 _canBuffTower = gameState["canBuffTower"].toBool();
                 _canBuffEnemy = gameState["canBuffEnemy"].toBool();
+                g_coins = gameState["g_coins"].toInt();
 
                 // 恢复敌人数据
                 _enemies.clear();
@@ -351,8 +381,9 @@ void GameWindow::onPlantMeleeTower() {
         // 如果被选中的格子高亮，则检查格子类型，种植近战塔
         if (_selectedGrid && _selectedGrid->isHighlighted) {
             if (_selectedGrid->type == GridType::PATH &&
-                !_selectedGrid->isplanted) {
+                !_selectedGrid->isplanted && _holyWater >= 5) {
                 qDebug() << "Plant melee tower here!";
+                _holyWater -= 5;
                 // 种植近战塔
                 Tower *tower =
                     new Knight(_selectedGrid->x, _selectedGrid->y, _enemies);
@@ -371,7 +402,8 @@ void GameWindow::onPlantMeleeTower() {
                 _selectedGrid = nullptr;
                 update();
             } else {
-                qDebug() << "Can't plant melee tower here!";
+                // 弹出提示框 不能种植
+                QMessageBox::information(this, "提示", "不能在此处种植近战塔");
             }
         }
     }
@@ -387,8 +419,9 @@ void GameWindow::onPlantRemoteTower() {
         // 如果被选中的格子高亮，则检查格子类型，种植远程塔
         if (_selectedGrid && _selectedGrid->isHighlighted) {
             if (_selectedGrid->type == GridType::REMOTE &&
-                !_selectedGrid->isplanted) {
+                !_selectedGrid->isplanted && _holyWater >= 10) {
                 qDebug() << "Plant remote tower here!";
+                _holyWater -= 10;
                 // 种植远程塔
                 Tower *tower =
                     new Shooter(_selectedGrid->x, _selectedGrid->y, _enemies);
@@ -407,7 +440,8 @@ void GameWindow::onPlantRemoteTower() {
                 _selectedGrid = nullptr;
                 update();
             } else {
-                qDebug() << "Can't plant remote tower here!";
+                // 弹出提示框 不能种植
+                QMessageBox::information(this, "提示", "不能在此处种植远程塔");
             }
         }
     }
@@ -842,6 +876,10 @@ void GameWindow::timerEvent(QTimerEvent *event) {
     if (_isPaused)
         return;
 
+    // 绘图事件
+    updateLabels();
+
+    _holyWater += g_holywater_speed;
     if (event->timerId() == _gameTimerID) {
         // 使用迭代器遍历所有敌人，以便在遍历过程中安全地删除敌人
         for (auto it = _enemies.begin(); it != _enemies.end();) {
@@ -881,6 +919,7 @@ void GameWindow::timerEvent(QTimerEvent *event) {
                 it = _enemies.erase(it);
                 delete enemy; // 释放敌人对象的内存
             } else if (enemy->_state == EnemyState::DEAD) {
+                g_coins += 10;
 
                 // 删除敌人
                 it = _enemies.erase(it);
@@ -917,6 +956,7 @@ void GameWindow::timerEvent(QTimerEvent *event) {
                 tower->attack();
                 ++it;
             } else if (tower->_state == TowerState::DEAD) {
+                g_coins -= 2;
 
                 // 如果塔已经死亡，删除塔
                 it = _towers.erase(it);

@@ -13,43 +13,92 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QPushButton" name="pushButton_Skin">
    <property name="geometry">
     <rect>
-     <x>310</x>
-     <y>440</y>
-     <width>71</width>
-     <height>51</height>
+     <x>150</x>
+     <y>660</y>
+     <width>131</width>
+     <height>71</height>
     </rect>
    </property>
    <property name="text">
-    <string>皮肤</string>
+    <string>购买近战皮肤 8金币</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QPushButton" name="pushButton_HolyWaterSpeed">
    <property name="geometry">
     <rect>
-     <x>530</x>
+     <x>830</x>
+     <y>640</y>
+     <width>241</width>
+     <height>111</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>圣水增加器（速度翻倍）1金币/瓶</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_HpMedicine">
+   <property name="geometry">
+    <rect>
+     <x>480</x>
      <y>650</y>
-     <width>121</width>
+     <width>201</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>生命补剂（所有塔加到满）1金币/瓶</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_Back">
+   <property name="geometry">
+    <rect>
+     <x>520</x>
+     <y>830</y>
+     <width>111</width>
      <height>61</height>
     </rect>
    </property>
    <property name="text">
-    <string>圣水增加器（速度翻倍）</string>
+    <string>返回上页</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton_3">
+  <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>450</x>
-     <y>490</y>
-     <width>141</width>
-     <height>91</height>
+     <x>520</x>
+     <y>0</y>
+     <width>151</width>
+     <height>191</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>50</pointsize>
+    </font>
+   </property>
    <property name="text">
-    <string>生命补剂（加到满）</string>
+    <string>商店</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_Coins">
+   <property name="geometry">
+    <rect>
+     <x>620</x>
+     <y>410</y>
+     <width>461</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>20</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>当前金币数量</string>
    </property>
   </widget>
  </widget>

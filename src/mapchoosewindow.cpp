@@ -22,12 +22,19 @@ MapChooseWindow::MapChooseWindow(QWidget *parent)
             SLOT(onLevel1Clicked()));
     connect(ui->pushButton_Level2, SIGNAL(clicked()), this,
             SLOT(onLevel2Clicked()));
+    connect(ui->pushButton_Shopping, SIGNAL(clicked()), this,
+            SLOT(onShoppingClicked()));
 
     _gameWindow = nullptr;
 }
 
 MapChooseWindow::~MapChooseWindow() { delete ui; }
 
+void MapChooseWindow::onShoppingClicked() {
+    _shoppingWindow = new shopping(this);
+    _shoppingWindow->show();
+    this->hide();
+}
 void MapChooseWindow::onMapChooseClicked() {
     QString dialogTitle = "Select Map File";  // 对话框标题
     QString defaultDir = QDir::currentPath(); // 默认打开的目录

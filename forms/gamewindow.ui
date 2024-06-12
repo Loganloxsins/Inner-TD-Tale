@@ -234,6 +234,91 @@
     <string>载入存档</string>
    </property>
   </widget>
+  <widget class="QLabel" name="label_Heart">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>960</y>
+     <width>111</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>15</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>生命数量</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_HolyWater">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>930</y>
+     <width>161</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>15</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>圣水</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_Coins">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>890</y>
+     <width>281</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>15</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>商店金币数</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_Hpmedicine">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>860</y>
+     <width>341</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>15</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>加血道具数</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_HpMedicine">
+   <property name="geometry">
+    <rect>
+     <x>540</x>
+     <y>940</y>
+     <width>81</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>使用加血道具</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

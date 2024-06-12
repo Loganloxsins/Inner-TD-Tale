@@ -7,16 +7,24 @@ namespace Ui {
 class shopping;
 }
 
-class shopping : public QDialog
-{
+class shopping : public QDialog {
     Q_OBJECT
 
-public:
+  public:
     explicit shopping(QWidget *parent = nullptr);
     ~shopping();
 
-private:
+    void updateLabels();
+
+  public slots:
+    void onHpMedicineClicked();
+    void onSkinClicked();
+    void onHolyWaterSpeedClicked();
+    void onBackClicked();
+
+  private:
     Ui::shopping *ui;
+    QWidget *_parent;
 };
 
 #endif // SHOPPING_H

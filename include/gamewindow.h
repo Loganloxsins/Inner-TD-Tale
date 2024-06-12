@@ -1,6 +1,7 @@
 #ifndef GAMEWINDOW_H
 #define GAMEWINDOW_H
 
+#include "globals.h"
 #include "map/grid.h"
 #include "map/map.h"
 #include "unit/base_enemy.h"
@@ -41,13 +42,18 @@ class GameWindow : public QDialog {
     Unit *_selectedUnit; // 当前选中的单位
 
     int _levelIndex;
+    int _holyWater; // 圣水数量，初始为10，近战塔消耗5，远程塔消耗10，每次timeevent增加1
+
+    // lable绘图
+    void updateLabels();
 
   public slots:
     void onSaveandBackClicked();
     void onLoadSaveClicked();
     void onPauseClicked();
-    void onPlantMeleeTower();  // 种植近战塔按钮点击事件
-    void onPlantRemoteTower(); // 种植远程塔按钮点击事件
+    void onPlantMeleeTower();   // 种植近战塔按钮点击事件
+    void onPlantRemoteTower();  // 种植远程塔按钮点击事件
+    void onHpMedicineClicked(); // 药水按钮点击事件
 
     void buffFury();
     void buffIce();

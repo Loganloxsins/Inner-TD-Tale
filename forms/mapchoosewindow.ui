@@ -30,6 +30,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QPushButton" name="pushButton_Shopping">
+     <property name="text">
+      <string>进入商店</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QPushButton" name="pushButton_MapChoose">
      <property name="text">
       <string>地图选择 </string>

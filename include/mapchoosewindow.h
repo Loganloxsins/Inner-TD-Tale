@@ -2,6 +2,7 @@
 #define MAPCHOOSEWINDOW_H
 
 #include "gamewindow.h"
+#include "shopping.h"
 #include <QDialog>
 
 namespace Ui {
@@ -21,11 +22,13 @@ class MapChooseWindow : public QDialog {
     void onBackClicked();
     void onLevel1Clicked();
     void onLevel2Clicked();
+    void onShoppingClicked();
 
   private:
     Ui::MapChooseWindow *ui;
     QWidget *_parent;
     GameWindow *_gameWindow;
+    shopping *_shoppingWindow;
 };
 
 #endif // MAPCHOOSEWINDOW_H

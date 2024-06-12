@@ -1,4 +1,5 @@
 {
+    "g_coins": 114,
     "arrivedEnemies": 0,
     "canBuffEnemy": false,
     "canBuffTower": false,

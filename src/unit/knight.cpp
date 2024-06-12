@@ -1,4 +1,5 @@
 #include "unit/knight.h"
+#include "globals.h"
 #include "unit/base_tower.h"
 
 Knight::Knight(int x, int y, vector<Enemy *> &enemies) : _enemies(enemies) {
@@ -18,8 +19,7 @@ Knight::Knight(int x, int y, vector<Enemy *> &enemies) : _enemies(enemies) {
     _buffSlot[0] = -1;
     _buffSlot[1] = -1;
 
-    _pic_path =
-        R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\assets\player2.png)";
+    _pic_path = g_melee_skin;
 }
 
 void Knight::draw(QPainter *painter) {
