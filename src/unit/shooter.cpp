@@ -16,8 +16,7 @@ Shooter::Shooter(int x, int y, vector<Enemy *> &enemies) : _enemies(enemies) {
     _buff_num = 0;
     _buffSlot[0] = -1;
     _buffSlot[1] = -1;
-    _pic_path =
-        R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\assets\Fighter.png)";
+    _pic_path = R"(..\..\.\assets\Fighter.png)";
 }
 
 void Shooter::draw(QPainter *painter) {

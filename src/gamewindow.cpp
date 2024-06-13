@@ -61,13 +61,13 @@ GameWindow::GameWindow(QWidget *parent, int levelIndex)
     // 初始化地图
     this->_map = new Map();
     QString filePath =
-        R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\data\map\map2.json)";
+        R"(..\..\.\data\map\map2.json)";
     if (_levelIndex == 1) {
         filePath =
-            R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\data\map\map1.json)";
+            R"(..\..\.\data\map\map1.json)";
     } else if (_levelIndex == 2) {
         filePath =
-            R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\data\map\map2.json)";
+            R"(..\..\.\data\map\map2.json)";
     }
 
     if (this->_map->loadMap(filePath)) {
@@ -854,7 +854,7 @@ void GameWindow::paintEvent(QPaintEvent *) {
 
     QPainter painter(this);
     QString path =
-        R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\assets\bg_day.png)";
+        R"(..\..\.\assets\bg_day.png)";
     // QString path =
     //     R"(:\assets\BG-hd.png)";不行
     QPixmap pixmap(path);

@@ -20,8 +20,7 @@ Boar::Boar(std::vector<std::pair<int, int>> path, Map *map) {
 
     // _target_tower = nullptr;
 
-    _pic_path =
-        R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\assets\food1.png)";
+    _pic_path = R"(..\..\.\assets\food1.png)";
 
     _x = _path[_path_index].first;
     _y = _path[_path_index].second;

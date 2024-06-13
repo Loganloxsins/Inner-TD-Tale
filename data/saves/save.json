@@ -1,28 +1,12 @@
 {
-    "g_coins": 114,
     "arrivedEnemies": 0,
     "canBuffEnemy": false,
     "canBuffTower": false,
     "enemies": [
-        {
-            "bleedDamage": 0,
-            "bleedDuration": 0,
-            "buffSlot": [
-                -1,
-                -1
-            ],
-            "buff_num": 0,
-            "hp_cur": 100,
-            "isArrivedCounted": false,
-            "jumpCoolDown": 3,
-            "state": 1,
-            "x": 10,
-            "y": 2
-        }
     ],
     "isPaused": true,
-    "levelIndex": 2,
-    "spawnedEnemies": 1,
+    "levelIndex": 1,
+    "spawnedEnemies": 0,
     "towers": [
     ]
 }

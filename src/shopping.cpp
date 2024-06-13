@@ -35,8 +35,7 @@ void shopping::onSkinClicked() {
     if (g_coins >= 8) {
         QMessageBox::information(this, "Shopping", "You bought Skin!");
         g_coins -= 8;
-        g_melee_skin =
-            R"(E:\MyProject\s6\cpp_final_proj\Inner-TD-Tale\assets\player0.png)";
+        g_melee_skin = R"(..\..\.\assets\player0.png)";
         updateLabels();
     } else {
         QMessageBox::information(this, "Shopping",
